@@ -91,9 +91,32 @@
             padding-left: 24%;
             text-align: left;
         }
+
+        #skip-btn {
+            position: absolute;
+            top: 40px;
+            right: 100px;
+            background: linear-gradient(to top, rgb(255, 216, 237), rgb(255, 86, 213)); /* 그라데이션 적용 */
+            border: 3px solid rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+        }
+
+        #skip-btn:hover {
+            background-color: rgb(255, 231, 249);
+            color: rgb(255, 255, 255);
+            border: 3px solid rgb(255, 255, 255);
+        }
+        
     </style>
 </head>
 <body>
+    <button id="skip-btn" onclick="fadeToRhythmGame()">SKIP ▶</button>
+    
     <div id="background"></div>
     
     <div id="choices">
