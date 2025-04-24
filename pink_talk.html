@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>rhythmgame small talk</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Dongle&family=Jua&family=Moirai+One&family=Single+Day&display=swap');
+        
+        * {
+            font-family: "Single Day", cursive;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            font-size: large;
+            display: flex;
+            flex-direction: column;
+            color: rgb(255, 255, 255);
+        }
+        
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('pink_talk.jpg');
+            background-size: cover;
+            filter: brightness(0.7);
+            z-index: -1;
+        }
+        
+        #choices {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            margin-top: 25vh;
+        }
+        
+        .choice-btn {
+            background-color: #ffb6dba6;
+            border: 3px solid #ff76ba;
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            font-size: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 600px;
+            border-radius: 10px;
+            text-shadow: 
+                -1px -1px 0 rgb(53, 53, 53),  
+                1px -1px 0 rgb(53, 53, 53),
+                -1px  1px 0 rgb(53, 53, 53),
+                1px  1px 0 rgb(53, 53, 53);
+        }
+        
+        .choice-btn:hover {
+            background-color: rgba(255, 208, 243, 0.719);
+            color: rgb(255, 67, 170);
+            border: 3px solid rgb(255, 255, 255);
+            text-shadow: 
+                -1px -1px 0 rgb(255, 255, 255),  
+                1px -1px 0 rgb(255, 255, 255),
+                -1px  1px 0 rgb(255, 255, 255),
+                1px  1px 0 rgb(255, 255, 255);
+        }
+        
+        #dialog-container {
+            background-image: url('pink_box.png'); 
+            padding: 20px;
+            margin: 50px auto;
+            width: 150%;
+            max-width: 1600px;
+            height: 600px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        #dialog-text {
+            font-size: 30px;
+            text-shadow: 2px 2px 4px #ffb6db;
+            padding-left: 24%;
+            text-align: left;
+        }
+
+        #skip-btn {
+            position: absolute;
+            top: 40px;
+            right: 100px;
+            background: linear-gradient(to top, rgb(255, 216, 237), rgb(255, 86, 213)); /* 그라데이션 적용 */
+            border: 3px solid rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+        }
+
+        #skip-btn:hover {
+            background-color: rgb(255, 231, 249);
+            color: rgb(255, 255, 255);
+            border: 3px solid rgb(255, 255, 255);
+        }
+        
+    </style>
+</head>
+<body>
+    <button id="skip-btn" onclick="fadeToRhythmGame()">SKIP ▶</button>
+    
+    <div id="background"></div>
+    
+    <div id="choices">
+        <button id="choice1" class="choice-btn" onclick="makeChoice(1)">안녕?</button>
+        <button id="choice2" class="choice-btn" onclick="makeChoice(2)">너는...</button>
+        <button id="choice3" class="choice-btn" onclick="makeChoice(3)">누구세요?</button>
+    </div>
+    
+    <div id="dialog-container">
+        <div id="dialog-text">......</div>
+    </div>
+
+    <script>
+const conversations = {
+    1: {
+        dialogs: [
+            "응! 안녕?",
+            "버블검팝은 청소년을 겨냥하여 만들어진 팝 음악이야.",
+            "우리 취향이 통할 것 같아. "
+        ],
+        choices: [
+            "너는 어떤 사람이야?",
+            "가장 좋아하는 가수가 뭐야?",
+            "나도 버블검 팝 좋아해!"
+        ],
+        nextConversation: {
+            1: 4,
+            2: 5,
+            3: 6
+        }
+    },
+    2: {
+        dialogs: [
+            "안녕? 난 Mero야.",
+            "난 귀여운 것과 달콤한 것을 좋아해!",
+            "우리 취향이 통할 것 같아."
+        ],
+        choices: [
+            "버블검 팝이 뭐야?",
+            "음악으로 무얼 표현하고 싶어?",
+            "귀여워!"
+        ],
+        nextConversation: {
+            1: 7,
+            2: 8,
+            3: 9
+        }
+    },
+    3: {
+        dialogs: [
+            "고마워!",
+            "너도 버블검 팝을 좋아하니?",
+            "우리 취향이 통할 것 같아."
+        ],
+        choices: [
+            "네 음악 취향에 대해 더 알고 싶어",
+            "패션에 대해 더 말해줘",
+            "그래, 더 이야기하자!"
+        ],
+        nextConversation: {
+            1: 10,
+            2: 11,
+            3: 12
+        }
+    },
+    4: {
+        dialogs: [
+            "올블랙 패션은 단순한 색깔이 아니야.",
+            "내면의 반항과 자유를 표현하는 거지.",
+            "우리 취향이 통할 것 같아."
+        ],
+        choices: [
+            "반항이란 무엇을 의미해?",
+            "패션으로 무얼 표현하고 싶어?",
+            "멋지다!"
+        ],
+        nextConversation: {
+            1: 13,
+            2: 14,
+            3: 15
+        }
+    }
+};
+
+let currentConversation = null;
+let dialogStep = 0;
+
+function makeChoice(choiceNumber) {
+    currentConversation = conversations[choiceNumber];
+    
+    document.getElementById('dialog-text').textContent = currentConversation.dialogs[dialogStep];
+    
+    document.getElementById('choice1').textContent = currentConversation.choices[0];
+    document.getElementById('choice2').textContent = currentConversation.choices[1];
+    document.getElementById('choice3').textContent = currentConversation.choices[2];
+    
+    dialogStep++;
+
+    if (dialogStep >= currentConversation.dialogs.length) {
+        setTimeout(fadeToRhythmGame, 2000);
+    }
+}
+
+function fadeToRhythmGame() {
+    const body = document.body;
+    body.style.transition = 'opacity 2s';
+    body.style.opacity = '0';
+            
+    setTimeout(() => {
+        window.location.href = 'https://soft-ray.github.io/yeji/rhythmgame_home.html';
+    }, 600);
+}
+    </script>
+</body>
+</html>
