@@ -76,21 +76,20 @@
         }
         
         .splash-title {
-    font-family: "Moirai One", system-ui;
-    font-weight: 700; /* 'bold' 또는 숫자 700으로 수정 */
-    font-style: normal;
-    font-size: 5rem; /* 여기를 키우면 폰트가 커짐 */
-    margin-bottom: 50px;
-    text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
-    letter-spacing: 2px;
-    animation: bounce 2s ease infinite;
-    color: #ff63e5;
-    width: 100%;
-    text-align: center;
-    position: relative;
-    z-index: 5;
-}
-
+            font-family: "Moirai One", system-ui;
+            font-weight: 700; /* 'bold' 또는 숫자 700으로 수정 */
+            font-style: normal;
+            font-size: 5rem; /* 여기를 키우면 폰트가 커짐 */
+            margin-bottom: 50px;
+            text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+            animation: bounce 2s ease infinite;
+            color: #ff63e5;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
@@ -150,24 +149,84 @@
         
         /* 음악 장르 박스 스타일 */
         .genre-box {
-    font-family: 'Gugi', cursive;
-    position: absolute;
-    bottom: -60px;
-    left: 50%;
-    transform: translateX(-50%) scale(0);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    opacity: 0;
-    white-space: nowrap;
-    z-index: 10;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
+            font-family: 'Gugi', cursive;
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            white-space: nowrap;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 새로 추가된 상세 설명 박스 스타일 */
+        .details-box {
+            font-family: 'Do Hyeon', sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translateY(-50%) translateX(20px) scale(0);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            width: 280px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            text-align: left;
+            pointer-events: none;
+        }
+        
+        .details-box h3 {
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+        }
+        
+        .details-box p {
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #fff;
+        }
+        
+        .details-box ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .details-box li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        /* 상세 설명 박스 화살표 */
+        .details-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid rgba(0, 0, 0, 0.85);
+        }
         
         /* 모든 색상 옵션에 동일한 hover 효과 적용 */
         .color-option:hover .color-image img {
@@ -181,6 +240,12 @@
             transform: translateX(-50%) scale(1);
             opacity: 1;
             bottom: 10px;
+        }
+        
+        /* 캐릭터 호버 시 상세 설명 박스 표시 */
+        .color-option:hover .details-box {
+            transform: translateY(-50%) translateX(20px) scale(1);
+            opacity: 1;
         }
         
         /* 개별 색상에 특화된 효과 (필터 색상 등) */
@@ -243,6 +308,62 @@
             background: rgba(236, 64, 122, 0.8);
             border-color: #ffffff;
             color: #fff;
+        }
+        
+        /* 상세 설명 박스 색상 개별화 */
+        .black .details-box {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .blue .details-box {
+            background: rgba(41, 98, 255, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .green .details-box {
+            background: rgba(0, 200, 83, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .purple .details-box {
+            background: rgba(170, 0, 255, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .yellow .details-box {
+            background: rgba(255, 193, 7, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .pink .details-box {
+            background: rgba(236, 64, 122, 0.9);
+            border-color: #ffffff;
+        }
+        
+        /* 상세 설명 박스 화살표 색상 개별화 */
+        .black .details-box::before {
+            border-right-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .blue .details-box::before {
+            border-right-color: rgba(41, 98, 255, 0.9);
+        }
+        
+        .green .details-box::before {
+            border-right-color: rgba(0, 200, 83, 0.9);
+        }
+        
+        .purple .details-box::before {
+            border-right-color: rgba(170, 0, 255, 0.9);
+        }
+        
+        .yellow .details-box::before {
+            border-right-color: rgba(255, 193, 7, 0.9);
+        }
+        
+        .pink .details-box::before {
+            border-right-color: rgba(236, 64, 122, 0.9);
         }
         
         body.black-bg {
@@ -366,6 +487,20 @@
         }
         
         /* 반응형 디자인을 위한 미디어 쿼리 */
+        @media (max-width: 1200px) {
+            .details-box {
+                width: 240px;
+            }
+            
+            .details-box h3 {
+                font-size: 18px;
+            }
+            
+            .details-box p, .details-box li {
+                font-size: 14px;
+            }
+        }
+        
         @media (max-width: 960px) {
             .color-options {
                 flex-wrap: wrap;
@@ -397,6 +532,58 @@
             .genre-box {
                 font-size: 14px;
             }
+            
+            .details-box {
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%) translateY(20px) scale(0);
+                width: 220px;
+            }
+            
+            .color-option:hover .details-box {
+                transform: translateX(-50%) translateY(20px) scale(1);
+            }
+            
+            .details-box::before {
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-right: 10px solid transparent;
+                border-left: 10px solid transparent;
+                border-bottom: 10px solid rgba(0, 0, 0, 0.85);
+                border-top: none;
+            }
+            
+            .black .details-box::before {
+                border-bottom-color: rgba(0, 0, 0, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .blue .details-box::before {
+                border-bottom-color: rgba(41, 98, 255, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .green .details-box::before {
+                border-bottom-color: rgba(0, 200, 83, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .purple .details-box::before {
+                border-bottom-color: rgba(170, 0, 255, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .yellow .details-box::before {
+                border-bottom-color: rgba(255, 193, 7, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .pink .details-box::before {
+                border-bottom-color: rgba(236, 64, 122, 0.9);
+                border-right-color: transparent;
+            }
         }
         
         @media (max-width: 600px) {
@@ -422,6 +609,19 @@
                 font-size: 12px;
                 padding: 6px 12px;
             }
+            
+            .details-box {
+                width: 180px;
+                padding: 15px;
+            }
+            
+            .details-box h3 {
+                font-size: 16px;
+            }
+            
+            .details-box p, .details-box li {
+                font-size: 12px;
+            }
         }
     </style>
     <!-- Add GSAP Library -->
@@ -446,6 +646,17 @@
                         <img src="black.png" alt="black Character">
                     </div>
                     <div class="genre-box">Rock</div>
+                    <div class="details-box">
+                        <h3>Rock</h3>
+                        <p>강렬한 기타 리프와 에너지 넘치는 드럼 비트가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>AC/DC - Back in Black (1980)</li>
+                            <li>Radiohead - Paranoid Android (1997)</li>
+                            <li>Imagine Dragons - Believer (2017)</li>
+                        </ul>
+                        <p>강한 개성과 반항적인 에너지를 느낄 수 있는 음악이야...</p>
+                    </div>
                 </a>
             </div>
             
@@ -455,6 +666,17 @@
                         <img src="blue.png" alt="blue Character">
                     </div>
                     <div class="genre-box">Future Bass</div>
+                    <div class="details-box">
+                        <h3>Future Bass</h3>
+                        <p>현대적인 신디사이저와 함께 몽환적인 사운드가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>Disclosure - You&Me (2013)</li>
+                            <li>Mura Masa - Love$ick (2013)</li>
+                            <li>The Chainsmokers - Closer (2016)</li>
+                        </ul>
+                        <p>감성적이면서도 미래지향적인 분위기의 일렉트로닉 음악이야.</p>
+                    </div>
                 </a>
             </div>
             
@@ -464,6 +686,17 @@
                         <img src="green.png" alt="green Character">
                     </div>
                     <div class="genre-box">Folk & Acoustic</div>
+                    <div class="details-box">
+                        <h3>Folk & Acoustic</h3>
+                        <p>자연스러운 악기와 진솔한 가사가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>The Beatles - Here Comes The Sun (1969)</li>
+                            <li>Harry Chapin - Cat's in the Cradle (1974)</li>
+                            <li>Joni Mitchell - Shadow And Light (1980)</li>
+                        </ul>
+                        <p>평화롭고 따뜻한 감성을 전달하는 음악으로, 자연과 삶의 이야기를 담고 있어.</p>
+                    </div>
                 </a>
             </div>
             
@@ -473,6 +706,17 @@
                         <img src="purple.png" alt="Purple Character">
                     </div>
                     <div class="genre-box">Synthwave</div>
+                    <div class="details-box">
+                        <h3>Synthwave</h3>
+                        <p>80년대 복고풍 신디사이저와 미래적인 사운드가 결합된 장르♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>College - Secret Diary (2008)</li>
+                            <li>Kristine - Superheroes (2013)</li>
+                            <li>Waveshaper - Velocity (2017)</li>
+                        </ul>
+                        <p>사이버펑크와 80년대 영화 사운드트랙에서 영감을 받은 몽환적인 음악이야야.</p>
+                    </div>
                 </a>
             </div>
             
@@ -482,6 +726,17 @@
                         <img src="yellow.png" alt="yellow Character">
                     </div>
                     <div class="genre-box">Pop & Funk</div>
+                    <div class="details-box">
+                        <h3>Pop & Funk</h3>
+                        <p>경쾌한 리듬과 그루브가 특징인 대중적인 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>A Taste of Honey - Boogie Oogie Oogie (1978)</li>
+                            <li>Billy Ocean - Caribbean Queen (No More Love on the Run) (1984)</li>
+                            <li>Ray J - Let It Go (1997)</li>
+                        </ul>
+                        <p>신나는 댄스 요소와 중독성 있는 멜로디로 즐거운 에너지를 느낄 수 있어!</p>
+                    </div>
                 </a>
             </div>
             
@@ -491,6 +746,17 @@
                         <img src="pink.png" alt="Pink Character">
                     </div>
                     <div class="genre-box">Bubblegum Pop</div>
+                    <div class="details-box">
+                        <h3>Bubblegum Pop</h3>
+                        <p>귀엽고 상큼한 분위기의 팝 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>Tommy James and the Shondells - I Think We're Alone Now (1967)</li>
+                            <li>The Jackson 5 - Mama's Pearl (1971)</li>
+                            <li>Cyndi Lauper - Girls Just Want to Have Fun (1983)</li>
+                        </ul>
+                        <p>가볍고 즐거운 분위기, 사랑스러운 가사가 특징이야♫</p>
+                    </div>
                 </a>
             </div>
         </div>
