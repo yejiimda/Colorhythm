@@ -10,6 +10,7 @@
         body {
             margin: 0;
             padding: 0;
+            font-family: "Moirai One", system-ui;
             background-size: 400% 400%;
             animation: gradient 10s ease infinite;
             color: white;
@@ -21,6 +22,22 @@
             overflow-x: hidden;
             transition: background 20s ease;
             padding-top: 50px;
+            position: relative;
+        }
+        
+        /* 도트 패턴 배경 효과 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0;
+            z-index: -1;
+            opacity: 0.6;
         }
         
         @keyframes gradient {
@@ -59,8 +76,10 @@
         }
         
         .splash-title {
-            font-size: 5rem;
-            font-weight: bold;
+            font-family: "Moirai One", system-ui;
+            font-weight: 700; /* 'bold' 또는 숫자 700으로 수정 */
+            font-style: normal;
+            font-size: 5rem; /* 여기를 키우면 폰트가 커짐 */
             margin-bottom: 50px;
             text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
             letter-spacing: 2px;
@@ -115,51 +134,98 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
         }
         
         .color-image img {
-            width: 400px;
-            height: 400px;
+            width: 80%;
+            height: auto;
             object-fit: contain;
-            gap: 100px;
             margin-top: 100px;
+            max-height: 300px;
             transition: all 0.4s ease;
             transform-origin: center;
         }
         
-        /* 장르 정보 박스 스타일 */
-        .genre-info {
+        /* 음악 장르 박스 스타일 */
+        .genre-box {
+            font-family: 'Gugi', cursive;
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            white-space: nowrap;
+            z-index: 10;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 새로 추가된 상세 설명 박스 스타일 */
+        .details-box {
+            font-family: 'Do Hyeon', sans-serif;
             position: absolute;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
+            left: 100%;
+            transform: translateY(-50%) translateX(20px) scale(0);
+            background: rgba(0, 0, 0, 0.85);
             padding: 20px;
-            border-radius: 15px;
-            border: 2px solid white;
-            text-align: center;
+            border-radius: 10px;
+            width: 280px;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 10;
-            width: 200px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            text-align: left;
+            pointer-events: none;
         }
         
-        .genre-info h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.5rem;
-            font-weight: bold;
+        .details-box h3 {
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #fff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
         }
         
-        .genre-info p {
-            margin: 0;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            opacity: 0.9;
+        .details-box p {
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #fff;
+        }
+        
+        .details-box ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .details-box li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        /* 상세 설명 박스 화살표 */
+        .details-box::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid rgba(0, 0, 0, 0.85);
         }
         
         /* 모든 색상 옵션에 동일한 hover 효과 적용 */
@@ -169,67 +235,135 @@
             filter: brightness(1.2);
         }
         
-        .color-option:hover .genre-info {
+        /* 캐릭터 호버 시 장르 박스 표시 */
+        .color-option:hover .genre-box {
+            transform: translateX(-50%) scale(1);
             opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1.05);
+            bottom: 10px;
+        }
+        
+        /* 캐릭터 호버 시 상세 설명 박스 표시 */
+        .color-option:hover .details-box {
+            transform: translateY(-50%) translateX(20px) scale(1);
+            opacity: 1;
         }
         
         /* 개별 색상에 특화된 효과 (필터 색상 등) */
         .black:hover .color-image img {
-            filter: drop-shadow(0 0 10px #ffffff);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
         .blue:hover .color-image img {
-            filter: drop-shadow(0 0 10px #448aff);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
         .green:hover .color-image img {
-            filter: drop-shadow(0 0 10px #00c853);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
         .purple:hover .color-image img {
-            filter: drop-shadow(0 0 10px #aa00ff);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
         .yellow:hover .color-image img {
-            filter: drop-shadow(0 0 10px #ffc107);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
         .pink:hover .color-image img {
-            filter: drop-shadow(0 0 10px #ec407a);
+            filter: drop-shadow(0 0 2px #ffffff);
         }
         
-        /* 장르별 색상 테마 */
-        .black .genre-info {
+        /* 장르 박스 색상 개별화 */
+        .black .genre-box {
+            background: rgba(0, 0, 0, 0.8);
             border-color: #ffffff;
-            background: linear-gradient(135deg, rgba(51, 51, 51, 0.95), rgba(0, 0, 0, 0.95));
+            color: #fff;
         }
         
-        .blue .genre-info {
-            border-color: #448aff;
-            background: linear-gradient(135deg, rgba(68, 138, 255, 0.95), rgba(41, 98, 255, 0.95));
+        .blue .genre-box {
+            background: rgba(41, 98, 255, 0.8);
+            border-color: #ffffff;
+            color: #fff;
         }
         
-        .green .genre-info {
-            border-color: #00c853;
-            background: linear-gradient(135deg, rgba(105, 240, 174, 0.95), rgba(0, 200, 83, 0.95));
+        .green .genre-box {
+            background: rgba(0, 200, 83, 0.8);
+            border-color: #ffffff;
+            color: #fff;
         }
         
-        .purple .genre-info {
-            border-color: #aa00ff;
-            background: linear-gradient(135deg, rgba(224, 64, 251, 0.95), rgba(170, 0, 255, 0.95));
+        .purple .genre-box {
+            background: rgba(170, 0, 255, 0.8);
+            border-color: #ffffff;
+            color: #fff;
         }
         
-        .yellow .genre-info {
-            border-color: #ffc107;
-            background: linear-gradient(135deg, rgba(255, 235, 59, 0.95), rgba(255, 193, 7, 0.95));
-            color: #333;
+        .yellow .genre-box {
+            background: rgba(255, 193, 7, 0.8);
+            border-color: #ffffff;
+            color: #ffffff;
         }
         
-        .pink .genre-info {
-            border-color: #ec407a;
-            background: linear-gradient(135deg, rgba(255, 128, 171, 0.95), rgba(236, 64, 122, 0.95));
+        .pink .genre-box {
+            background: rgba(236, 64, 122, 0.8);
+            border-color: #ffffff;
+            color: #fff;
+        }
+        
+        /* 상세 설명 박스 색상 개별화 */
+        .black .details-box {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .blue .details-box {
+            background: rgba(41, 98, 255, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .green .details-box {
+            background: rgba(0, 200, 83, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .purple .details-box {
+            background: rgba(170, 0, 255, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .yellow .details-box {
+            background: rgba(255, 193, 7, 0.9);
+            border-color: #ffffff;
+        }
+        
+        .pink .details-box {
+            background: rgba(236, 64, 122, 0.9);
+            border-color: #ffffff;
+        }
+        
+        /* 상세 설명 박스 화살표 색상 개별화 */
+        .black .details-box::before {
+            border-right-color: rgba(0, 0, 0, 0.9);
+        }
+        
+        .blue .details-box::before {
+            border-right-color: rgba(41, 98, 255, 0.9);
+        }
+        
+        .green .details-box::before {
+            border-right-color: rgba(0, 200, 83, 0.9);
+        }
+        
+        .purple .details-box::before {
+            border-right-color: rgba(170, 0, 255, 0.9);
+        }
+        
+        .yellow .details-box::before {
+            border-right-color: rgba(255, 193, 7, 0.9);
+        }
+        
+        .pink .details-box::before {
+            border-right-color: rgba(236, 64, 122, 0.9);
         }
         
         body.black-bg {
@@ -312,27 +446,40 @@
         }
         
         .black-overlay {
-            background: linear-gradient(45deg, #333333, #000000);
+            background: linear-gradient(180deg, #e0e0e0, #000000);
         }
         
         .blue-overlay {
-            background: linear-gradient(45deg, #448aff, #2962ff);
+            background: linear-gradient(180deg, #d1e2ff, #a0baff);
         }
         
         .green-overlay {
-            background: linear-gradient(45deg, #69f0ae, #00c853);
+            background: linear-gradient(180deg, #d1ffe9, #9de9bd);
         }
         
         .purple-overlay {
-            background: linear-gradient(45deg, #e040fb, #aa00ff);
+            background: linear-gradient(180deg, #fadcff, #d79cf5);
         }
         
         .yellow-overlay {
-            background: linear-gradient(45deg, #ffeb3b, #ffc107);
+            background: linear-gradient(180deg, #fff9c6, #ffdd76);
         }
         
         .pink-overlay {
-            background: linear-gradient(45deg, #ff80ab, #ec407a);
+            background: linear-gradient(180deg, #ffd3e1, #ffa4ea);
+        }
+        
+        /* 배경 오버레이에 도트 패턴 추가 */
+        .bg-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle, rgb(255, 255, 255) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1;
         }
         
         .bg-overlay.active {
@@ -340,6 +487,20 @@
         }
         
         /* 반응형 디자인을 위한 미디어 쿼리 */
+        @media (max-width: 1200px) {
+            .details-box {
+                width: 240px;
+            }
+            
+            .details-box h3 {
+                font-size: 18px;
+            }
+            
+            .details-box p, .details-box li {
+                font-size: 14px;
+            }
+        }
+        
         @media (max-width: 960px) {
             .color-options {
                 flex-wrap: wrap;
@@ -366,21 +527,62 @@
             
             .color-image img {
                 margin-top: 50px;
-                width: 100px;
-                height: 100px;
             }
             
-            .genre-info {
-                width: 160px;
-                padding: 15px;
+            .genre-box {
+                font-size: 14px;
             }
             
-            .genre-info h3 {
-                font-size: 1.3rem;
+            .details-box {
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%) translateY(20px) scale(0);
+                width: 220px;
             }
             
-            .genre-info p {
-                font-size: 0.8rem;
+            .color-option:hover .details-box {
+                transform: translateX(-50%) translateY(20px) scale(1);
+            }
+            
+            .details-box::before {
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-right: 10px solid transparent;
+                border-left: 10px solid transparent;
+                border-bottom: 10px solid rgba(0, 0, 0, 0.85);
+                border-top: none;
+            }
+            
+            .black .details-box::before {
+                border-bottom-color: rgba(0, 0, 0, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .blue .details-box::before {
+                border-bottom-color: rgba(41, 98, 255, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .green .details-box::before {
+                border-bottom-color: rgba(0, 200, 83, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .purple .details-box::before {
+                border-bottom-color: rgba(170, 0, 255, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .yellow .details-box::before {
+                border-bottom-color: rgba(255, 193, 7, 0.9);
+                border-right-color: transparent;
+            }
+            
+            .pink .details-box::before {
+                border-bottom-color: rgba(236, 64, 122, 0.9);
+                border-right-color: transparent;
             }
         }
         
@@ -401,23 +603,27 @@
             
             .color-image img {
                 margin-top: 30px;
-                width: 80px;
-                height: 80px;
             }
             
-            .genre-info {
-                width: 140px;
-                padding: 12px;
+            .genre-box {
+                font-size: 12px;
+                padding: 6px 12px;
             }
             
-            .genre-info h3 {
-                font-size: 1.1rem;
+            .details-box {
+                width: 180px;
+                padding: 15px;
             }
             
-            .genre-info p {
-                font-size: 0.7rem;
+            .details-box h3 {
+                font-size: 16px;
+            }
+            
+            .details-box p, .details-box li {
+                font-size: 12px;
             }
         }
+        
     </style>
     <!-- Add GSAP Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -439,22 +645,38 @@
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="black_stand2.png" alt="black Character">
-                        <div class="genre-info">
-                            <h3>Rock</h3>
-                            <p>내 안에선 늘 무언가 들끓고 있어.</p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Rock</div>
+                    <div class="details-box">
+                        <h3>Rock</h3>
+                        <p>강렬한 기타 리프와 에너지 넘치는 드럼 비트가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>AC/DC - Back in Black (1980)</li>
+                            <li>Radiohead - Paranoid Android (1997)</li>
+                            <li>Imagine Dragons - Believer (2017)</li>
+                        </ul>
+                        <p>강한 개성과 반항적인 에너지를 느낄 수 있는 음악이야...</p>
                     </div>
                 </a>
             </div>
-            
+
             <div class="color-option blue">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="blue.png" alt="blue Character">
-                        <div class="genre-info">
-                            <h3>Future Bass</h3>
-                            <p>꿈과 현실 사이, 네온빛 안개 속을 걷는 기분이야!</p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Future Bass</div>
+                    <div class="details-box">
+                        <h3>Future Bass</h3>
+                        <p>현대적인 신디사이저와 함께 몽환적인 사운드가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>Disclosure - You&Me (2013)</li>
+                            <li>Mura Masa - Love$ick (2013)</li>
+                            <li>The Chainsmokers - Closer (2016)</li>
+                        </ul>
+                        <p>감성적이면서도 미래지향적인 분위기의 일렉트로닉 음악이야.</p>
                     </div>
                 </a>
             </div>
@@ -463,34 +685,58 @@
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="green_stand2.png" alt="green Character">
-                        <div class="genre-info">
-                            <h3>Folk</h3>
-                            <p>자연스럽고 조용하지만, 마음 깊은 곳을 울릴 수 있는 따뜻한 음악이에요.</p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Folk & Acoustic</div>
+                    <div class="details-box">
+                        <h3>Folk & Acoustic</h3>
+                        <p>자연스러운 악기와 진솔한 가사가 특징♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>The Beatles - Here Comes The Sun (1969)</li>
+                            <li>Harry Chapin - Cat's in the Cradle (1974)</li>
+                            <li>Joni Mitchell - Shadow And Light (1980)</li>
+                        </ul>
+                        <p>평화롭고 따뜻한 감성을 전달하는 음악으로, 자연과 삶의 이야기를 담고 있어.</p>
                     </div>
                 </a>
             </div>
             
             <div class="color-option purple">
-                <a href=https://yejiimda.github.io/Colorhythm/pink_talk.html class="color-link">
+                <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="purple.png" alt="Purple Character">
-                        <div class="genre-info">
-                            <h3>Synthwave</h3>
-                            <p>우주처럼 몽환적인 느낌이 필요해? 그럼 나를 따라와. </p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Synthwave</div>
+                    <div class="details-box">
+                        <h3>Synthwave</h3>
+                        <p>80년대 복고풍 신디사이저와 미래적인 사운드가 결합된 장르♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>College - Secret Diary (2008)</li>
+                            <li>Kristine - Superheroes (2013)</li>
+                            <li>Waveshaper - Velocity (2017)</li>
+                        </ul>
+                        <p>사이버펑크와 80년대 영화 사운드트랙에서 영감을 받은 몽환적인 음악이야야.</p>
                     </div>
                 </a>
             </div>
             
             <div class="color-option yellow">
-                <a href=https://yejiimda.github.io/Colorhythm/pink_talk.html class="color-link">
+                <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="yellow_stand2.png" alt="yellow Character">
-                        <div class="genre-info">
-                            <h3>Pop</h3>
-                            <p>밝고 경쾌한 팝 음악은 날 신나게 해!</p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Pop & Funk</div>
+                    <div class="details-box">
+                        <h3>Pop & Funk</h3>
+                        <p>경쾌한 리듬과 그루브가 특징인 대중적인 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>A Taste of Honey - Boogie Oogie Oogie (1978)</li>
+                            <li>Billy Ocean - Caribbean Queen (No More Love on the Run) (1984)</li>
+                            <li>Ray J - Let It Go (1997)</li>
+                        </ul>
+                        <p>신나는 댄스 요소와 중독성 있는 멜로디로 즐거운 에너지를 느낄 수 있어!</p>
                     </div>
                 </a>
             </div>
@@ -499,18 +745,76 @@
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img src="pink_stand2.png" alt="Pink Character">
-                        <div class="genre-info">
-                            <h3>Bubblegum Pop</h3>
-                            <p>달콤하고 톡톡 튀는 게 매력! 안 들어 본 사람은 있어도 한 번만 들은 사람은 없을걸?</p>
-                        </div>
+                    </div>
+                    <div class="genre-box">Bubblegum Pop</div>
+                    <div class="details-box">
+                        <h3>Bubblegum Pop</h3>
+                        <p>귀엽고 상큼한 분위기의 팝 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>Tommy James and the Shondells - I Think We're Alone Now (1967)</li>
+                            <li>The Jackson 5 - Mama's Pearl (1971)</li>
+                            <li>Cyndi Lauper - Girls Just Want to Have Fun (1983)</li>
+                        </ul>
+                        <p>가볍고 즐거운 분위기, 사랑스러운 가사가 특징이야♫</p>
                     </div>
                 </a>
-            </div>
+                           
+        </div>
+    </div>
+</div>
+      </div>
         </div>
     </div>
 
     <!-- 배경 버블 효과 -->
     <script>
+        // 기존 링크 클릭 이벤트를 막고 확인 팝업 표시
+document.addEventListener('DOMContentLoaded', function() {
+    const colorLinks = document.querySelectorAll('.color-link');
+    const modal = document.getElementById('confirmationModal');
+    const confirmYes = document.getElementById('confirmYes');
+    const confirmNo = document.getElementById('confirmNo');
+    let selectedLink = null;
+
+    // 각 캐릭터 링크에 클릭 이벤트 추가
+    colorLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // 기본 링크 동작 방지
+            selectedLink = this.href; // 선택된 링크 저장
+            modal.style.display = 'block'; // 모달 표시
+        });
+    });
+
+    // '예' 버튼 클릭 시
+    confirmYes.addEventListener('click', function() {
+        if (selectedLink) {
+            window.location.href = selectedLink; // 선택된 페이지로 이동
+        }
+    });
+
+    // '아니오' 버튼 클릭 시
+    confirmNo.addEventListener('click', function() {
+        modal.style.display = 'none'; // 모달 닫기
+        selectedLink = null; // 선택 초기화
+    });
+
+    // 모달 배경 클릭 시 닫기
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            selectedLink = null;
+        }
+    });
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            modal.style.display = 'none';
+            selectedLink = null;
+        }
+    });
+});
         document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i < 20; i++) {
                 createBubble();
@@ -594,3 +898,4 @@
     </script>
 </body>
 </html>
+
