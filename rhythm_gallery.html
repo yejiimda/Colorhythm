@@ -221,6 +221,17 @@ body {
             transform: translateY(-2px);
         }
         
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .play-btn:disabled:hover {
+            background: none;
+            transform: none;
+        }
+        
         .navigation {
             display: flex;
             justify-content: center;
@@ -298,6 +309,105 @@ body {
             margin: 3px 0 0 0;
         }
         
+        /* Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: linear-gradient(135deg, #ff63e5, #ffa4f0);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .modal-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: white;
+            opacity: 0.9;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .modal-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Do Hyeon', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 70px;
+        }
+        
+        .modal-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .modal-btn.confirm {
+            background: #ff66d8;
+            border-color: #ffffff;
+        }
+        
+        .modal-btn.confirm:hover {
+            background: #ffffff;
+            color: #ff66d8;
+            
+        }
+        
+        .modal-btn.cancel {
+            background: #5fffdc;
+            border-color: #ffffff;
+        }
+        
+        .modal-btn.cancel:hover {
+            background: rgb(255, 255, 255);
+             color: #5fffdc;
+        }
+        
         /* Media queries */
         @media (max-width: 768px) {
             .header h1 {
@@ -310,6 +420,15 @@ body {
             
             .character-portrait {
                 height: 180px;
+            }
+            
+            .modal {
+                padding: 20px;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+                gap: 10px;
             }
         }
         
@@ -428,7 +547,7 @@ body {
     <div class="container">
         <div class="header">
             <h1>　</h1>
-            <p>캐릭터</p>
+            <p>　</p>
         </div>
         
         <!-- 캐릭터 갤러리 섹션 -->
@@ -456,24 +575,23 @@ body {
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-title">호감 표현</div>
+            <div class="modal-message">호감을 표현하겠습니까?</div>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" id="confirmYes">예</button>
+                <button class="modal-btn cancel" id="confirmNo">아니오</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Character data
             const characters = [
-                {
-                    id: 'black',
-                    name: 'Kael',
-                    genre: 'Rock',
-                    image: 'images/characters/black.png',
-                    portrait: 'yellow_half.png',
-                    affinity: 0,
-                    maxAffinity: 10,
-                    baseUrl: 'https://yejiimda.github.io/Colorhythm/noxtalk.html',
-                    unlockAffinity: 0,
-                    color: '#ffffff',
-                    personality: '반항아 / 외강내유 /  유리멘탈'
-                },
-
+ 
                 {
                     id: 'green',
                     name: 'Naru',
@@ -516,6 +634,10 @@ body {
                 }
             ];
             
+            // Daily interaction tracking (using memory instead of localStorage)
+            let dailyInteractions = {};
+            let currentPendingCharacter = null;
+            
             // Load saved data
             loadUserData();
             
@@ -524,6 +646,25 @@ body {
             
             // Generate character cards
             generateCharacterCards();
+            
+            // Modal event listeners
+            document.getElementById('confirmYes').addEventListener('click', function() {
+                if (currentPendingCharacter) {
+                    confirmIncreaseAffinity(currentPendingCharacter);
+                }
+                hideModal();
+            });
+            
+            document.getElementById('confirmNo').addEventListener('click', function() {
+                hideModal();
+            });
+            
+            // Close modal when clicking overlay
+            document.getElementById('confirmModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideModal();
+                }
+            });
             
             // 캐릭터 갤러리 생성 함수 - 실제 이미지 사용
             function generateCharacterGallery() {
@@ -562,15 +703,98 @@ body {
             }
             
             // Function to load user data from variables (instead of localStorage)
-            function loadUserData() {
-                // In a real environment, this would load from localStorage
-                // For artifact, we'll use default values
+
+// 기존 loadUserData() 함수를 다음과 같이 수정:
+function loadUserData() {
+    try {
+        const savedInteractions = localStorage.getItem('dailyInteractions');
+        if (savedInteractions) {
+            dailyInteractions = JSON.parse(savedInteractions);
+        }
+        
+        const savedCharacters = localStorage.getItem('charactersData');
+        if (savedCharacters) {
+            const saved = JSON.parse(savedCharacters);
+            // 저장된 호감도 데이터로 characters 배열 업데이트
+            saved.forEach(savedChar => {
+                const charIndex = characters.findIndex(c => c.id === savedChar.id);
+                if (charIndex !== -1) {
+                    characters[charIndex].affinity = savedChar.affinity;
+                }
+            });
+        }
+    } catch (error) {
+        console.log('데이터 로딩 실패:', error);
+    }
+    
+    const today = getTodayString();
+    if (!dailyInteractions[today]) {
+        dailyInteractions[today] = {};
+    }
+}
+            // Function to save user data (using variables instead of localStorage)
+function saveUserData() {
+    try {
+        localStorage.setItem('dailyInteractions', JSON.stringify(dailyInteractions));
+        localStorage.setItem('charactersData', JSON.stringify(characters));
+    } catch (error) {
+        console.log('데이터 저장 실패:', error);
+    }
+}
+
+// 자정에 일일 제한을 리셋하는 함수 추가:
+function checkAndResetDailyLimit() {
+    const today = getTodayString();
+    const lastResetDate = localStorage.getItem('lastResetDate');
+    
+    if (lastResetDate !== today) {
+        // 새로운 날이므로 일일 제한 리셋
+        dailyInteractions = {};
+        dailyInteractions[today] = {};
+        localStorage.setItem('lastResetDate', today);
+        saveUserData();
+        
+        // UI 업데이트
+        generateCharacterCards();
+    }
+}
+
+            // Get today's date as string
+            function getTodayString() {
+                const today = new Date();
+                return today.getFullYear() + '-' + 
+                       String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                       String(today.getDate()).padStart(2, '0');
             }
             
-            // Function to save user data (using variables instead of localStorage)
-            function saveUserData() {
-                // In a real environment, this would save to localStorage
-                // For artifact, we'll just keep data in memory
+            // Check if character interaction is allowed today
+            function canInteractToday(characterId) {
+                const today = getTodayString();
+                return !dailyInteractions[today] || !dailyInteractions[today][characterId];
+            }
+            
+            // Mark character as interacted today
+            function markInteractedToday(characterId) {
+                const today = getTodayString();
+                if (!dailyInteractions[today]) {
+                    dailyInteractions[today] = {};
+                }
+                dailyInteractions[today][characterId] = true;
+            }
+            
+            // Show confirmation modal
+            function showModal(characterId, characterName) {
+                currentPendingCharacter = characterId;
+                const modal = document.getElementById('confirmModal');
+                const message = modal.querySelector('.modal-message');
+                message.textContent = `${characterName}에게 호감을 표현하겠습니까?`;
+                modal.classList.add('show');
+            }
+            
+            // Hide confirmation modal
+            function hideModal() {
+                currentPendingCharacter = null;
+                document.getElementById('confirmModal').classList.remove('show');
             }
             
             // Generate character cards - 실제 이미지 사용으로 수정
@@ -585,6 +809,10 @@ body {
                     // 실제 이미지 경로 사용
                     const portraitUrl = char.portrait;
                     const imageUrl = char.image;
+                    
+                    const canInteract = canInteractToday(char.id);
+                    const buttonText = canInteract ? '호감도 +' : '호감도 + (완료)';
+                    const buttonDisabled = !canInteract ? 'disabled' : '';
                     
                     card.innerHTML = `
                         <div class="character-portrait" style="background-image: url('${portraitUrl}');">
@@ -618,7 +846,7 @@ body {
                         </div>
                         <div class="character-actions">
                             <button class="play-btn" data-character="${char.id}" data-url="${char.baseUrl}">대화하기</button>
-                            <button class="play-btn" data-character="${char.id}" data-action="increase">호감도 +</button>
+                            <button class="play-btn" data-character="${char.id}" data-action="increase" ${buttonDisabled}>${buttonText}</button>
                         </div>
                     `;
                     
@@ -658,8 +886,16 @@ body {
                 
                 document.querySelectorAll('.play-btn[data-action="increase"]').forEach(btn => {
                     btn.addEventListener('click', function() {
+                        if (this.disabled) return;
+                        
                         const charId = this.getAttribute('data-character');
-                        increaseAffinity(charId);
+                        const character = characters.find(c => c.id === charId);
+                        
+                        if (canInteractToday(charId)) {
+                            showModal(charId, character.name);
+                        } else {
+                            showAchievement('알림', '이미 호감을 표현했습니다');
+                        }
                     });
                 });
             }
@@ -683,13 +919,18 @@ body {
                 return "처음 만난 사이";
             }
             
-            // Increase character affinity
-            function increaseAffinity(characterId) {
+            // Confirm and increase character affinity
+            function confirmIncreaseAffinity(characterId) {
                 const charIndex = characters.findIndex(c => c.id === characterId);
                 if (charIndex === -1) return;
                 
-                if (characters[charIndex].affinity < characters[charIndex].maxAffinity) {
-                    characters[charIndex].affinity++;
+                const character = characters[charIndex];
+                
+                if (character.affinity < character.maxAffinity) {
+                    character.affinity++;
+                    
+                    // Mark as interacted today
+                    markInteractedToday(characterId);
                     
                     // Save data
                     saveUserData();
@@ -698,10 +939,10 @@ body {
                     generateCharacterCards();
                     
                     // Show achievement
-                    showAchievement(`${characters[charIndex].name} 호감도 상승!`, 
-                                   `현재 레벨: ${getAffinityLevel(characters[charIndex].affinity)}`);
+                    showAchievement(`${character.name} 호감도 상승!`, 
+                                   `현재 레벨: ${getAffinityLevel(character.affinity)}`);
                 } else {
-                    showAchievement(`${characters[charIndex].name}`, `이미 최대 호감도에 도달했습니다!`);
+                    showAchievement(`${character.name}`, `이미 최대 호감도에 도달했습니다!`);
                 }
             }
             
@@ -718,6 +959,9 @@ body {
                 }, 3000);
             }
         });
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
