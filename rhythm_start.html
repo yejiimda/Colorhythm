@@ -77,9 +77,9 @@
         
         .splash-title {
             font-family: "Moirai One", system-ui;
-            font-weight: 700; /* 'bold' 또는 숫자 700으로 수정 */
+            font-weight: 700;
             font-style: normal;
-            font-size: 5rem; /* 여기를 키우면 폰트가 커짐 */
+            font-size: 5rem;
             margin-bottom: 50px;
             text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
             letter-spacing: 2px;
@@ -137,7 +137,8 @@
             overflow: hidden;
         }
         
-        .color-image img {
+        /* 기본 실루엣 이미지 */
+        .color-image .silhouette {
             width: 80%;
             height: auto;
             object-fit: contain;
@@ -145,6 +146,39 @@
             max-height: 300px;
             transition: all 0.4s ease;
             transform-origin: center;
+            opacity: 1;
+            filter: brightness(0) invert(1);
+            position: absolute;
+        }
+        
+        /* 호버 시 나타날 실제 캐릭터 이미지 */
+        .color-image .character {
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+            margin-top: 100px;
+            max-height: 300px;
+            transition: all 0.4s ease;
+            transform-origin: center;
+            opacity: 0;
+            transform: scale(0.8);
+            position: absolute;
+        }
+        
+        /* 배경 캐릭터 얼굴 이미지 */
+        .bg-character-face {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 400px;
+            height: 400px;
+            object-fit: cover;
+            opacity: 0;
+            z-index: -1;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: blur(8px) brightness(0.6);
+            border-radius: 50%;
         }
         
         /* 음악 장르 박스 스타일 */
@@ -228,11 +262,21 @@
             border-right: 10px solid rgba(0, 0, 0, 0.85);
         }
         
-        /* 모든 색상 옵션에 동일한 hover 효과 적용 */
-        .color-option:hover .color-image img {
-            animation: scale-in-ver-center 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+        /* 호버 효과 */
+        .color-option:hover .silhouette {
+            opacity: 0;
+            transform: scale(1.1);
+        }
+        
+        .color-option:hover .character {
+            opacity: 1;
             transform: scale(1.3);
             filter: brightness(1.2);
+        }
+        
+        .color-option:hover .bg-character-face {
+            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(1.2);
         }
         
         /* 캐릭터 호버 시 장르 박스 표시 */
@@ -249,28 +293,28 @@
         }
         
         /* 개별 색상에 특화된 효과 (필터 색상 등) */
-        .black:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .black:hover .character {
+            filter: drop-shadow(0 0 10px #ffffff) brightness(1.2);
         }
         
-        .blue:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .blue:hover .character {
+            filter: drop-shadow(0 0 10px #4a90ff) brightness(1.2);
         }
         
-        .green:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .green:hover .character {
+            filter: drop-shadow(0 0 10px #00ff54) brightness(1.2);
         }
         
-        .purple:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .purple:hover .character {
+            filter: drop-shadow(0 0 10px #aa00ff) brightness(1.2);
         }
         
-        .yellow:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .yellow:hover .character {
+            filter: drop-shadow(0 0 10px #ffeb3b) brightness(1.2);
         }
         
-        .pink:hover .color-image img {
-            filter: drop-shadow(0 0 2px #ffffff);
+        .pink:hover .character {
+            filter: drop-shadow(0 0 10px #ff80ab) brightness(1.2);
         }
         
         /* 장르 박스 색상 개별화 */
@@ -499,6 +543,11 @@
             .details-box p, .details-box li {
                 font-size: 14px;
             }
+            
+            .bg-character-face {
+                width: 300px;
+                height: 300px;
+            }
         }
         
         @media (max-width: 960px) {
@@ -525,7 +574,8 @@
                 width: 140px;
             }
             
-            .color-image img {
+            .color-image .silhouette,
+            .color-image .character {
                 margin-top: 50px;
             }
             
@@ -584,6 +634,11 @@
                 border-bottom-color: rgba(236, 64, 122, 0.9);
                 border-right-color: transparent;
             }
+            
+            .bg-character-face {
+                width: 250px;
+                height: 250px;
+            }
         }
         
         @media (max-width: 600px) {
@@ -601,7 +656,8 @@
                 margin-top: 30px;
             }
             
-            .color-image img {
+            .color-image .silhouette,
+            .color-image .character {
                 margin-top: 30px;
             }
             
@@ -622,6 +678,11 @@
             .details-box p, .details-box li {
                 font-size: 12px;
             }
+            
+            .bg-character-face {
+                width: 200px;
+                height: 200px;
+            }
         }
         
     </style>
@@ -637,6 +698,14 @@
     <div class="bg-overlay yellow-overlay" id="yellow-overlay"></div>
     <div class="bg-overlay pink-overlay" id="pink-overlay"></div>
     
+    <!-- 배경 캐릭터 얼굴 이미지들 -->
+    <img class="bg-character-face" id="bg-black-face" src="black_face.png" alt="Black Character Face">
+    <img class="bg-character-face" id="bg-blue-face" src="blue_face.png" alt="Blue Character Face">
+    <img class="bg-character-face" id="bg-green-face" src="green_face.png" alt="Green Character Face">
+    <img class="bg-character-face" id="bg-purple-face" src="purple_face.png" alt="Purple Character Face">
+    <img class="bg-character-face" id="bg-yellow-face" src="yellow_face.png" alt="Yellow Character Face">
+    <img class="bg-character-face" id="bg-pink-face" src="pink_face.png" alt="Pink Character Face">
+    
     <div class="splash-container">
         <h1 class="splash-title">Choose your color!</h1>
         
@@ -644,7 +713,8 @@
             <div class="color-option black">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img src="black_stand2.png" alt="black Character">
+                        <img class="silhouette" src="black_stand2.png" alt="Black Character Silhouette">
+                        <img class="character" src="black_stand2_full.png" alt="Black Character">
                     </div>
                     <div class="genre-box">Rock</div>
                     <div class="details-box">
@@ -664,7 +734,8 @@
             <div class="color-option blue">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img src="blue.png" alt="blue Character">
+                        <img class="silhouette" src="blue.png" alt="Blue Character Silhouette">
+                        <img class="character" src="blue_full.png" alt="Blue Character">
                     </div>
                     <div class="genre-box">Future Bass</div>
                     <div class="details-box">
@@ -684,7 +755,8 @@
             <div class="color-option green">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img src="green_stand2.png" alt="green Character">
+                        <img class="silhouette" src="green_stand2.png" alt="Green Character Silhouette">
+                        <img class="character" src="green_stand2_full.png" alt="Green Character">
                     </div>
                     <div class="genre-box">Folk & Acoustic</div>
                     <div class="details-box">
@@ -704,7 +776,8 @@
             <div class="color-option purple">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img src="purple.png" alt="Purple Character">
+                        <img class="silhouette" src="purple.png" alt="Purple Character Silhouette">
+                        <img class="character" src="purple_full.png" alt="Purple Character">
                     </div>
                     <div class="genre-box">Synthwave</div>
                     <div class="details-box">
@@ -724,115 +797,4 @@
             <div class="color-option yellow">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img src="yellow_stand2.png" alt="yellow Character">
-                    </div>
-                    <div class="genre-box">Pop & Funk</div>
-                    <div class="details-box">
-                        <h3>Pop & Funk</h3>
-                        <p>경쾌한 리듬과 그루브가 특징인 대중적인 음악♫</p>
-                        <p>대표곡</p>
-                        <ul>
-                            <li>A Taste of Honey - Boogie Oogie Oogie (1978)</li>
-                            <li>Billy Ocean - Caribbean Queen (No More Love on the Run) (1984)</li>
-                            <li>Ray J - Let It Go (1997)</li>
-                        </ul>
-                        <p>신나는 댄스 요소와 중독성 있는 멜로디로 즐거운 에너지를 느낄 수 있어!</p>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="color-option pink">
-                <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
-                    <div class="color-image">
-                        <img src="pink_stand2.png" alt="Pink Character">
-                    </div>
-                    <div class="genre-box">Bubblegum Pop</div>
-                    <div class="details-box">
-                        <h3>Bubblegum Pop</h3>
-                        <p>귀엽고 상큼한 분위기의 팝 음악♫</p>
-                        <p>대표곡</p>
-                        <ul>
-                            <li>Tommy James and the Shondells - I Think We're Alone Now (1967)</li>
-                            <li>The Jackson 5 - Mama's Pearl (1971)</li>
-                            <li>Cyndi Lauper - Girls Just Want to Have Fun (1983)</li>
-                        </ul>
-                        <p>가볍고 즐거운 분위기, 사랑스러운 가사가 특징이야♫</p>
-                    </div>
-                </a>
-                           
-        </div>
-    </div>
-</div>
-      </div>
-        </div>
-    </div>
-
-    <!-- 배경 버블 효과 -->
-    <script>
-
-    
-            
-            // 마우스 이펙트
-            document.addEventListener('mousemove', function(e) {
-                if (Math.random() > 0.9) {
-                    const sparkle = document.createElement('div');
-                    sparkle.classList.add('sparkle');
-                    sparkle.style.left = e.pageX + 'px';
-                    sparkle.style.top = e.pageY + 'px';
-                    document.body.appendChild(sparkle);
-                    
-                    // CSS 트랜지션을 사용한 애니메이션
-                    gsapAnimate(sparkle);
-                    
-                    setTimeout(() => {
-                        sparkle.remove();
-                    }, 1000);
-                }
-            });
-            
-            function gsapAnimate(elem) {
-                elem.style.transition = 'all 1s ease';
-                elem.style.opacity = '1';
-                elem.style.transform = 'scale(1.5) rotate(' + (Math.random() * 360) + 'deg)';
-                
-                setTimeout(() => {
-                    elem.style.opacity = '0';
-                    elem.style.transform = 'scale(0.2) rotate(' + (Math.random() * 360) + 'deg)';
-                }, 300);
-            }
-
-            // 컬러 옵션 호버 시 배경 오버레이 변경 (서서히 변화)
-            const colorOptions = document.querySelectorAll('.color-option');
-            const overlays = document.querySelectorAll('.bg-overlay');
-            
-            // 초기화: 모든 오버레이 비활성화
-            overlays.forEach(overlay => {
-                overlay.classList.remove('active');
-            });
-            
-            colorOptions.forEach(option => {
-                option.addEventListener('mouseenter', function() {
-                    const colorClass = this.classList[1];
-                    const overlay = document.getElementById(colorClass + '-overlay');
-                    
-                    // 모든 오버레이 비활성화
-                    overlays.forEach(o => {
-                        o.classList.remove('active');
-                    });
-                    
-                    // 선택된 오버레이만 활성화
-                    overlay.classList.add('active');
-                });
-                
-                option.addEventListener('mouseleave', function() {
-                    // 마우스가 떠났을 때 모든 오버레이 비활성화
-                    overlays.forEach(overlay => {
-                        overlay.classList.remove('active');
-                    });
-                });
-            });
-        });
-    </script>
-</body>
-</html>
-
+                        <img class="silhouette" src="yellow_stand2.png" alt="Yellow Character Silhouette
