@@ -12,6 +12,7 @@
             padding: 0;
             font-family: "Moirai One", system-ui;
             background-size: 400% 400%;
+            background-image: url('introbg.jpg');
             animation: gradient 10s ease infinite;
             color: white;
             height: 100vh;
@@ -19,49 +20,8 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            overflow-x: hidden;
-            transition: background 20s ease;
-            padding-top: 50px;
+            overflow: hidden;
             position: relative;
-        }
-        
-        /* 도트 패턴 배경 효과 */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-position: 0 0;
-            z-index: -1;
-            opacity: 0.6;
-        }
-        
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        
-        /* 수직 중앙 확대 애니메이션 정의 */
-        @keyframes scale-in-ver-center {
-            0% {
-                transform: scaleY(0);
-                opacity: 0;
-            }
-            100% {
-                transform: scaleY(1);
-                opacity: 1;
-            }
         }
         
         .splash-container {
@@ -71,8 +31,71 @@
             text-align: center;
             width: 100%;
             max-width: 1200px;
-            padding: 0 20px;
-            margin-bottom: 30px;
+            padding: 20px;
+            flex: 1;
+            justify-content: space-between;
+            min-height: 0;
+        }
+        
+        /* 말풍선 컨테이너 */
+        .speech-bubble-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        
+        /* 말풍선 배경 */
+        .speech-bubble {
+            background: rgba(255, 255, 255, 0.514);
+            border-radius: 50px;
+            padding: 40px 60px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 4px solid #91ffc8;
+            transform: scale(0);
+            animation: bubbleAppear 1s ease-out 0.5s forwards;
+        }
+        
+        /* 말풍선 꼬리 */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 25px solid rgba(255, 255, 255, 0.514);
+        }
+        
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -29px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 29px solid transparent;
+            border-right: 29px solid transparent;
+            border-top: 29px solid #91ffc8;
+        }
+        
+        @keyframes bubbleAppear {
+            0% {
+                transform: scale(0) rotate(-10deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1) rotate(2deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
         }
         
         .splash-title {
@@ -80,112 +103,155 @@
             font-weight: 700;
             font-style: normal;
             font-size: 5rem;
-            margin-bottom: 50px;
-            text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+            margin: 0;
+            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
             letter-spacing: 2px;
-            animation: bounce 2s ease infinite;
-            color: #ff63e5;
+            color: #ff66d8;
             width: 100%;
             text-align: center;
             position: relative;
             z-index: 5;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 4px solid #ff63e5;
+            animation: typing 3s steps(18, end) 1.5s forwards, blink-caret 0.75s step-end infinite 1.5s;
+            width: 0;
         }
         
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+        /* 타이핑 애니메이션 */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        /* 커서 깜빡임 애니메이션 */
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #ff63e5; }
+        }
+        
+        /* 타이핑 완료 후 커서 제거하고 텍스트 유지 */
+        .splash-title.typing-complete {
+            border-right: none;
+            animation: none;
+            width: 100%;
+            white-space: normal;
         }
         
         .color-options {
             display: flex;
             justify-content: center;
+            align-items: flex-end;
             gap: 10px;
             flex-wrap: nowrap;
             width: 100%;
             max-width: 1200px;
-            margin-top: 50px;
+            height: 380px;
+            overflow: visible;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 4.5s forwards;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .color-options {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+            flex-wrap: nowrap;
+            width: 100%;
+            max-width: 1200px;
             height: 400px;
             overflow: visible;
-        }
-        
-        .color-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 400px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 4.5s forwards;
             position: relative;
+            flex-shrink: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
-        
         .color-link {
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            width: 100%;
         }
         
         .color-image {
-            width: 180px;
-            height: 400px;
+            width: 200px;
+            height: 100%;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
         
-        /* 기본 실루엣 이미지 */
+        /* 기본 실루엣 이미지 - 크기 증가 및 하단 정렬 */
         .color-image .silhouette {
-            width: 80%;
+            width: 300px;
             height: auto;
             object-fit: contain;
-            margin-top: 100px;
-            max-height: 300px;
             transition: all 0.4s ease;
-            transform-origin: center;
+            transform-origin: bottom center;
             opacity: 1;
             filter: brightness(0) invert(1);
             position: absolute;
+            bottom: 0;
+            max-height: 320px;
         }
         
-        /* 호버 시 나타날 실제 캐릭터 이미지 */
+        /* 호버 시 나타날 실제 캐릭터 이미지 - 크기 증가 및 하단 정렬 */
         .color-image .character {
-            width: 80%;
+            width: 180px;
             height: auto;
             object-fit: contain;
-            margin-top: 100px;
-            max-height: 300px;
             transition: all 0.4s ease;
-            transform-origin: center;
+            transform-origin: bottom center;
             opacity: 0;
             transform: scale(0.8);
             position: absolute;
+            bottom: 0;
+            max-height: 320px;
         }
         
         /* 배경 캐릭터 얼굴 이미지 */
         .bg-character-face {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 100%;
+            left: 70%;
             transform: translate(-50%, -50%) scale(0);
-            width: 400px;
-            height: 400px;
-            object-fit: cover;
-            opacity: 0;
+            margin-top: 300px;
+            width: 1000px;
+            height: 3000px;
+
+            opacity: 60;
             z-index: -1;
             transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            filter: blur(8px) brightness(0.6);
-            border-radius: 50%;
+            filter: blur(4px) brightness(0.6);
         }
         
         /* 음악 장르 박스 스타일 */
         .genre-box {
             font-family: 'Gugi', cursive;
             position: absolute;
-            bottom: -60px;
+            bottom: -50px;
             left: 50%;
             transform: translateX(-50%) scale(0);
             background: rgba(0, 0, 0, 0.7);
@@ -248,19 +314,7 @@
             font-size: 14px;
         }
         
-        /* 상세 설명 박스 화살표 */
-        .details-box::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: -10px;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-right: 10px solid rgba(0, 0, 0, 0.85);
-        }
+
         
         /* 호버 효과 */
         .color-option:hover .silhouette {
@@ -270,14 +324,11 @@
         
         .color-option:hover .character {
             opacity: 1;
-            transform: scale(1.3);
+            transform: scale(1.2);
             filter: brightness(1.2);
         }
         
-        .color-option:hover .bg-character-face {
-            opacity: 0.3;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
+
         
         /* 캐릭터 호버 시 장르 박스 표시 */
         .color-option:hover .genre-box {
@@ -294,27 +345,27 @@
         
         /* 개별 색상에 특화된 효과 (필터 색상 등) */
         .black:hover .character {
-            filter: drop-shadow(0 0 10px #ffffff) brightness(1.2);
+            filter: drop-shadow(0 0 5px #ffffff) brightness(1.2);
         }
         
         .blue:hover .character {
-            filter: drop-shadow(0 0 10px #4a90ff) brightness(1.2);
+            filter: drop-shadow(0 0 5px #4a90ff) brightness(1.2);
         }
         
         .green:hover .character {
-            filter: drop-shadow(0 0 10px #00ff54) brightness(1.2);
+            filter: drop-shadow(0 0 5px #00ff54) brightness(1.2);
         }
         
         .purple:hover .character {
-            filter: drop-shadow(0 0 10px #aa00ff) brightness(1.2);
+            filter: drop-shadow(0 0 5px #aa00ff) brightness(1.2);
         }
         
         .yellow:hover .character {
-            filter: drop-shadow(0 0 10px #ffeb3b) brightness(1.2);
+            filter: drop-shadow(0 0 5px #ffeb3b) brightness(1.2);
         }
         
         .pink:hover .character {
-            filter: drop-shadow(0 0 10px #ff80ab) brightness(1.2);
+            filter: drop-shadow(0 0 5px #ff80ab) brightness(1.2);
         }
         
         /* 장르 박스 색상 개별화 */
@@ -490,27 +541,27 @@
         }
         
         .black-overlay {
-            background: linear-gradient(180deg, #e0e0e0, #000000);
+            background: linear-gradient(180deg, #ffffff, #555555);
         }
         
         .blue-overlay {
-            background: linear-gradient(180deg, #d1e2ff, #a0baff);
+            background: linear-gradient(180deg, #ffffff, #a0baff);
         }
         
         .green-overlay {
-            background: linear-gradient(180deg, #d1ffe9, #9de9bd);
+            background: linear-gradient(180deg, #ffffff, #9de9bd);
         }
         
         .purple-overlay {
-            background: linear-gradient(180deg, #fadcff, #d79cf5);
+            background: linear-gradient(180deg, #ffffff, #d79cf5);
         }
         
         .yellow-overlay {
-            background: linear-gradient(180deg, #fff9c6, #ffdd76);
+            background: linear-gradient(180deg, #ffffff, #ffdd76);
         }
         
         .pink-overlay {
-            background: linear-gradient(180deg, #ffd3e1, #ffa4ea);
+            background: linear-gradient(180deg, #ffffff, #ffa4ea);
         }
         
         /* 배경 오버레이에 도트 패턴 추가 */
@@ -521,7 +572,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: radial-gradient(circle, rgb(255, 255, 255) 1px, transparent 1px);
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.452) 8px, transparent 30px);
             background-size: 20px 20px;
             z-index: 1;
         }
@@ -548,6 +599,24 @@
                 width: 300px;
                 height: 300px;
             }
+            
+            .speech-bubble {
+                padding: 30px 40px;
+            }
+            
+            .splash-title {
+                font-size: 4rem;
+            }
+            
+            .color-image {
+                width: 160px;
+            }
+            
+            .color-image .silhouette,
+            .color-image .character {
+                width: 150px;
+                max-height: 350px;
+            }
         }
         
         @media (max-width: 960px) {
@@ -555,28 +624,34 @@
                 flex-wrap: wrap;
                 justify-content: center;
                 height: auto;
-                margin-top: 20px;
+                margin-top: 10px;
+                gap: 15px;
+                max-height: 60vh;
             }
             
             .color-option {
-                margin: 10px;
-                height: 300px;
+                margin: 5px;
+                height: 280px;
+            }
+            
+            .speech-bubble {
+                padding: 20px 30px;
+                border-radius: 25px;
             }
             
             .splash-title {
-                font-size: 3.5rem;
-                margin-top: 20px;
-                margin-bottom: 20px;
+                font-size: 3rem;
             }
             
             .color-image {
-                height: 300px;
+                height: 100%;
                 width: 140px;
             }
             
             .color-image .silhouette,
             .color-image .character {
-                margin-top: 50px;
+                width: 130px;
+                max-height: 240px;
             }
             
             .genre-box {
@@ -642,23 +717,36 @@
         }
         
         @media (max-width: 600px) {
+            .splash-container {
+                padding: 10px;
+            }
+            
+            .color-options {
+                max-height: 50vh;
+                gap: 10px;
+            }
+            
             .color-image {
-                width: 90px;
-                height: 200px;
-            }
-            
-            .color-option {
-                height: 200px;
-            }
-            
-            .splash-title {
-                font-size: 2.5rem;
-                margin-top: 30px;
+                width: 100px;
             }
             
             .color-image .silhouette,
             .color-image .character {
-                margin-top: 30px;
+                width: 90px;
+                max-height: 200px;
+            }
+            
+            .color-option {
+                height: 220px;
+            }
+            
+            .speech-bubble {
+                padding: 15px 25px;
+                border-radius: 20px;
+            }
+            
+            .splash-title {
+                font-size: 2rem;
             }
             
             .genre-box {
@@ -698,23 +786,20 @@
     <div class="bg-overlay yellow-overlay" id="yellow-overlay"></div>
     <div class="bg-overlay pink-overlay" id="pink-overlay"></div>
     
-    <!-- 배경 캐릭터 얼굴 이미지들 -->
-    <img class="bg-character-face" id="bg-black-face" src="green_stand2.png" alt="Black Character Face">
-    <img class="bg-character-face" id="bg-blue-face" src="green_stand2.png" alt="Blue Character Face">
-    <img class="bg-character-face" id="bg-green-face" src="green_stand2.png" alt="Green Character Face">
-    <img class="bg-character-face" id="bg-purple-face" src="green_stand2.png" alt="Purple Character Face">
-    <img class="bg-character-face" id="bg-yellow-face" src="green_stand2.png" alt="Yellow Character Face">
-    <img class="bg-character-face" id="bg-pink-face" src="green_stand2.png" alt="Pink Character Face">
-    
+
     <div class="splash-container">
-        <h1 class="splash-title">Choose your color!</h1>
+        <div class="speech-bubble-container">
+            <div class="speech-bubble">
+                <h1 class="splash-title">Choose your color!</h1>
+            </div>
+        </div>
         
         <div class="color-options">
             <div class="color-option black">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img class="silhouette" src="black_stand2.png" alt="Black Character Silhouette">
-                        <img class="character" src="black_stand2.png" alt="Black Character">
+                        <img class="character" src="black_stand.png" alt="Black Character">
                     </div>
                     <div class="genre-box">Rock</div>
                     <div class="details-box">
@@ -734,8 +819,8 @@
             <div class="color-option blue">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img class="silhouette" src="blue.png" alt="Blue Character Silhouette">
-                        <img class="character" src="blue_full.png" alt="Blue Character">
+                        <img class="silhouette" src="blue_stand2.png" alt="Blue Character Silhouette">
+                        <img class="character" src="blue_stand.png" alt="Blue Character">
                     </div>
                     <div class="genre-box">Future Bass</div>
                     <div class="details-box">
@@ -756,7 +841,7 @@
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
                         <img class="silhouette" src="green_stand2.png" alt="Green Character Silhouette">
-                        <img class="character" src="green_stand2_full.png" alt="Green Character">
+                        <img class="character" src="green_stand.png" alt="Green Character">
                     </div>
                     <div class="genre-box">Folk & Acoustic</div>
                     <div class="details-box">
@@ -776,8 +861,8 @@
             <div class="color-option purple">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img class="silhouette" src="purple.png" alt="Purple Character Silhouette">
-                        <img class="character" src="purple_full.png" alt="Purple Character">
+                        <img class="silhouette" src="purple_stand2.png" alt="Purple Character Silhouette">
+                        <img class="character" src="purple_stand.png" alt="Purple Character">
                     </div>
                     <div class="genre-box">Synthwave</div>
                     <div class="details-box">
@@ -789,7 +874,7 @@
                             <li>Kristine - Superheroes (2013)</li>
                             <li>Waveshaper - Velocity (2017)</li>
                         </ul>
-                        <p>사이버펑크와 80년대 영화 사운드트랙에서 영감을 받은 몽환적인 음악이야야.</p>
+                        <p>사이버펑크와 80년대 영화 사운드트랙에서 영감을 받은 몽환적인 음악이야.</p>
                     </div>
                 </a>
             </div>
@@ -797,4 +882,131 @@
             <div class="color-option yellow">
                 <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
                     <div class="color-image">
-                        <img class="silhouette" src="yellow_stand2.png" alt="Yellow Character Silhouette
+                        <img class="silhouette" src="yellow_stand2.png" alt="Yellow Character Silhouette">
+                        <img class="character" src="yellow_stand.png" alt="Yellow Character">
+                    </div>
+                    <div class="genre-box">Pop & Funk</div>
+                    <div class="details-box">
+                        <h3>Pop & Funk</h3>
+                        <p>경쾌한 리듬과 그루브가 특징인 대중적인 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>A Taste of Honey - Boogie Oogie Oogie (1978)</li>
+                            <li>Billy Ocean - Caribbean Queen (No More Love on the Run) (1984)</li>
+                            <li>Ray J - Let It Go (1997)</li>
+                        </ul>
+                        <p>신나는 댄스 요소와 중독성 있는 멜로디로 즐거운 에너지를 느낄 수 있어!</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="color-option pink">
+                <a href="https://yejiimda.github.io/Colorhythm/pink_talk.html" class="color-link">
+                    <div class="color-image">
+                        <img class="silhouette" src="pink_stand2.png" alt="Pink Character Silhouette">
+                        <img class="character" src="pink_stand.png" alt="Pink Character">
+                    </div>
+                    <div class="genre-box">Bubblegum Pop</div>
+                    <div class="details-box">
+                        <h3>Bubblegum Pop</h3>
+                        <p>귀엽고 상큼한 분위기의 팝 음악♫</p>
+                        <p>대표곡</p>
+                        <ul>
+                            <li>Tommy James and the Shondells - I Think We're Alone Now (1967)</li>
+                            <li>The Jackson 5 - Mama's Pearl (1971)</li>
+                            <li>Cyndi Lauper - Girls Just Want to Have Fun (1983)</li>
+                        </ul>
+                        <p>가볍고 즐거운 분위기, 사랑스러운 가사가 특징이야♫</p>
+                    </div>
+                </a>
+            </div>
+                           
+        </div>
+    </div>
+
+       <!-- 배경 버블 효과 -->
+    <script>
+        // 타이핑 애니메이션 완료 후 커서 제거
+        setTimeout(() => {
+            const title = document.querySelector('.splash-title');
+            title.classList.add('typing-complete');
+        }, 4500);
+
+        // 마우스 이펙트
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.9) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = e.pageX + 'px';
+                sparkle.style.top = e.pageY + 'px';
+                document.body.appendChild(sparkle);
+                
+                // CSS 트랜지션을 사용한 애니메이션
+                gsapAnimate(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        });
+        
+        function gsapAnimate(elem) {
+            elem.style.transition = 'all 1s ease';
+            elem.style.opacity = '1';
+            elem.style.transform = 'scale(1.5) rotate(' + (Math.random() * 360) + 'deg)';
+            
+            setTimeout(() => {
+                elem.style.opacity = '0';
+                elem.style.transform = 'scale(0.2) rotate(' + (Math.random() * 360) + 'deg)';
+            }, 300);
+        }
+
+        // 컬러 옵션 호버 시 배경 오버레이 변경 (서서히 변화)
+        const colorOptions = document.querySelectorAll('.color-option');
+        const overlays = document.querySelectorAll('.bg-overlay');
+        const bgFaces = document.querySelectorAll('.bg-character-face');
+        
+        // 초기화: 모든 오버레이와 배경 얼굴 비활성화
+        overlays.forEach(overlay => {
+            overlay.classList.remove('active');
+        });
+        
+        colorOptions.forEach(option => {
+            option.addEventListener('mouseenter', function() {
+                const colorClass = this.classList[1];
+                const overlay = document.getElementById(colorClass + '-overlay');
+                const bgFace = document.getElementById('bg-' + colorClass + '-face');
+                
+                // 모든 오버레이와 배경 얼굴 비활성화
+                overlays.forEach(o => {
+                    o.classList.remove('active');
+                });
+                bgFaces.forEach(face => {
+                    face.style.opacity = '0';
+                    face.style.transform = 'translate(-50%, -50%) scale(0)';
+                });
+                
+                // 선택된 오버레이와 배경 얼굴만 활성화
+                overlay.classList.add('active');
+                if (bgFace) {
+                    bgFace.style.opacity = '0.3';
+                    bgFace.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                }
+            });
+            
+            option.addEventListener('mouseleave', function() {
+                // 마우스가 떠났을 때 모든 오버레이와 배경 얼굴 비활성화
+                overlays.forEach(overlay => {
+                    overlay.classList.remove('active');
+                });
+                bgFaces.forEach(face => {
+                    face.style.opacity = '0';
+                    face.style.transform = 'translate(-50%, -50%) scale(0)';
+                });
+            });
+        });
+
+
+    </script>
+</body>
+</html>

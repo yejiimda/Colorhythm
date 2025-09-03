@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Carousel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      background-image: url('introbg.jpg');
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .carousel-container {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease;
+      height: 100%;
+    }
+
+    .carousel-item {
+      flex: 0 0 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .character-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: transform 0.6s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .character-section.scrolled {
+      transform: translateY(-100vh);
+    }
+
+    /* 캐릭터 프로필 스타일 */
+    .browser-window {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(138, 34, 34, 0.2);
+      overflow: hidden;
+      transform: scale(0.9);
+    }
+    
+    .browser-header {
+      background: linear-gradient(135deg, #dffff1 0%, #87ebbc 100%);
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #3ccc89;
+    }
+    
+    .browser-controls {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .control-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .close { background: #ff5f57; }
+    .minimize { background: #ffbd2e; }
+    .maximize { background: #28ca42; }
+    
+    .address-bar {
+      background: rgba(255,255,255,0.9);
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      color: #666;
+      flex: 1;
+      margin: 0 20px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .window-controls {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .window-btn {
+      width: 16px;
+      height: 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.2);
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .banner {
+      background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #a8d5a8;
+    }
+    
+    .navigation {
+      background: #d4edda;
+      padding: 10px 0;
+      text-align: center;
+      border-bottom: 1px solid #a8d5a8;
+    }
+    
+    .nav-btn {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid #a8d5a8;
+      padding: 8px 16px;
+      margin: 0 2px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .nav-btn.active {
+      background: #a8d5a8;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .content {
+      display: flex;
+      min-height: 400px;
+    }
+
+    /* 콘텐츠 섹션들 */
+    .content-section {
+      display: none;
+      width: 100%;
+    }
+
+    .content-section.active {
+      display: flex;
+    }
+    
+    .character-image {
+      flex: 1;
+      padding: 20px;
+      background: #f8f9fa;
+      border-right: 2px solid #e9ecef;
+    }
+    
+    .character-img {
+      width: 100%;
+      max-width: 300px;
+      height: 350px;
+      background: linear-gradient(180deg, #ffffff 30%, #ccffe7 100%);
+      border: 2px solid #89f0c0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .character-img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 20px rgba(168, 213, 168, 0.3);
+    }
+
+    .character-img:active {
+      transform: scale(0.98);
+    }
+    
+    .character-placeholder {
+      color: #666;
+      font-size: 16px;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .profile-section {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+    }
+    
+    .profile-header {
+      background: #87ebbc;
+      color: white;
+      padding: 10px 15px;
+      margin: -20px -20px 20px -20px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .profile-info {
+      line-height: 1.8;
+      font-size: 14px;
+    }
+    
+    .profile-info strong {
+      color: #87ebbc;
+      display: inline-block;
+      width: 80px;
+    }
+
+    /* 갤러리 스타일 */
+    .gallery-section {
+      width: 100%;
+      padding: 20px;
+      background: #fff;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
+      border: 2px solid #a8d5a8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(168, 213, 168, 0.3);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-placeholder {
+      color: #87ebbc;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* 다이어리 스타일 */
+    .diary-section {
+      width: 100%;
+      padding: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .diary-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .diary-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #87ebbc, #a8d5a8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .diary-user-info h3 {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .diary-user-info p {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .diary-posts {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .diary-post {
+      padding: 15px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.2s ease;
+    }
+
+    .diary-post:hover {
+      background: #f9f9f9;
+    }
+
+    .diary-post-content {
+      margin-bottom: 8px;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .diary-post-time {
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* (방명록) 스타일 */
+    .goods-section {
+      width: 100%;
+      padding: 20px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guestbook-form {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #87ebbc;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .submit-btn {
+      background: #87ebbc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: #6fd4a0;
+      transform: translateY(-1px);
+    }
+
+    .guestbook-messages {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 250px;
+    }
+
+    .guestbook-message {
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #f0f8f0;
+      border-radius: 8px;
+      border-left: 4px solid #87ebbc;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .message-author {
+      font-weight: bold;
+      color: #87ebbc;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .message-content {
+      color: #333;
+      line-height: 1.4;
+    }
+    
+    .banner-section {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-top: 2px solid #e9ecef;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .banner-label {
+      background: #87ebbc;
+      color: white;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: inline-block;
+      border-radius: 3px;
+    }
+    
+    .banner-content {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      min-height: 80px;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .footer {
+      text-align: right;
+      padding: 10px 20px;
+      background: #f8f9fa;
+      font-size: 12px;
+      color: #666;
+      border-top: 1px solid #e9ecef;
+    }
+
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: scale(1.1);
+    }
+
+    /* 말풍선 스타일 */
+    .speech-bubble {
+      position: absolute;
+      background: white;
+      border: 2px solid #87ebbc;
+      border-radius: 20px;
+      padding: 15px 20px;
+      max-width: 200px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 100;
+      font-size: 14px;
+      color: #87ebbc;
+      line-height: 1.4;
+      opacity: 0;
+      transform: scale(0.8) translateY(10px);
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none;
+    }
+    
+    .speech-bubble.show {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-left: 8px solid #a8d5a8;
+    }
+    
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-left: 7px solid white;
+    }
+
+    /* 클릭 효과 */
+    .click-effect {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, rgba(168, 213, 168, 0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: clickRipple 0.6s ease-out;
+    }
+    
+    @keyframes clickRipple {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* 음악 섹션 스타일 */
+    .music-section {
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(255, 123, 215, 0.1), rgba(138, 43, 226, 0.1));
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: absolute;
+      top: 100vh;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      transition: transform 0.6s ease;
+    }
+
+    .music-section.visible {
+      transform: translateY(-100vh);
+    }
+
+    .music-title {
+      color: #fff;
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 3rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .music-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      max-width: 1200px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    /* CD 스타일 카드 */
+    .music-card {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4e4e4e88, #2e0f27);
+      border: 3px solid #ff66d8;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      box-shadow: 
+        inset 0 0 30px rgba(255, 255, 255, 0.1),
+        0 10px 30px rgba(0, 0, 0, 0.3);
+      transform-style: preserve-3d;
+      overflow: hidden;
+    }
+
+    .music-card::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      background: #333;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+    }
+
+    .music-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: conic-gradient(
+        transparent 0deg,
+        rgba(255, 255, 255, 0.1) 45deg,
+        transparent 90deg,
+        rgba(255, 255, 255, 0.1) 135deg,
+        transparent 180deg,
+        rgba(255, 255, 255, 0.1) 225deg,
+        transparent 270deg,
+        rgba(255, 255, 255, 0.1) 315deg,
+        transparent 360deg
+      );
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    .music-card:hover {
+      transform: scale(1.2) rotateY(10deg);
+      box-shadow: 
+        inset 0 0 30px rgb(255, 123, 215),
+        0 20px 50px rgb(255, 123, 215);
+      border-color: #ffffff;
+    }
+
+    .music-card:hover::after {
+      animation: cdSpin 2s linear infinite;
+    }
+
+    @keyframes cdSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 1rem;
+    }
+
+    .music-card h3 {
+      color: #fff;
+      font-size: 1.0rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      font-weight: bold;
+    }
+
+    .music-card p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .play-button {
+      background:  #ff66d8;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .play-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 123, 215, 0.5);
+    }
+
+    /* 스크롤 인디케이터 */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      text-align: center;
+      z-index: 10;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator.hidden {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+      }
+      40% {
+        transform: translateX(-50%) translateY(-10px);
+      }
+      60% {
+        transform: translateX(-50%) translateY(-5px);
+      }
+    }
+
+    /* 화살표 네비게이션 */
+    .nav-arrows {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 30px;
+      pointer-events: none;
+    }
+
+    .nav-arrow {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      pointer-events: all;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      border: 3px solid rgba(255, 123, 215, 0.6);
+    }
+
+    .nav-arrow:hover {
+      background: #ff7bd7;
+      transform: scale(1.1);
+      box-shadow: 0 8px 30px rgba(255, 123, 215, 0.4);
+    }
+
+    .nav-arrow svg {
+      width: 24px;
+      height: 24px;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+
+    .nav-arrow:hover svg {
+      color: white;
+    }
+
+    .nav-arrow.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 반응형 디자인을 위한 미디어 쿼리 */
+    @media (max-width: 768px) {
+      .browser-window {
+        transform: scale(0.7);
+      }
+      
+      .music-grid {
+        gap: 2rem;
+      }
+      
+      .music-card {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .music-card h3 {
+        font-size: 1rem;
+      }
+      
+      .music-card p {
+        font-size: 0.7rem;
+      }
+      
+      .music-title {
+        font-size: 2rem;
+      }
+      
+      .music-section {
+        padding: 1rem;
+      }
+
+      .nav-arrow {
+        width: 50px;
+        height: 50px;
+      }
+
+      .nav-arrow svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .browser-window {
+        transform: scale(0.6);
+      }
+      
+      .music-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .music-card {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 이미지 모달 -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImage" src="" alt="Gallery Image">
+    </div>
+  </div>
+
+  <!-- 네비게이션 화살표 -->
+  <div class="nav-arrows">
+    <div class="nav-arrow" id="prevArrow" onclick="previousSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+    </div>
+    <div class="nav-arrow" id="nextArrow" onclick="nextSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m9 18 6-6-6-6"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="carousel-container">
+    <div class="carousel-track" id="carouselTrack">
+      <!-- Airi1 -->
+      <div class="carousel-item" data-character="airi">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / Airi</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active" data-tab="profile">프로필</button>
+              <button class="nav-btn" data-tab="gallery">갤러리</button>
+              <button class="nav-btn" data-tab="diary">다이어리</button>
+              <button class="nav-btn" data-tab="goods">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="blue_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Airi</p>
+                    <p><strong>MBTI:</strong> ESFP</p>
+                    <p><strong>생일:</strong> 3월 15일</p>
+                    <p><strong>나이:</strong> 17</p>
+                    <p><strong>특징:</strong> 밝고 활발한 성격</p>
+                    <p><strong>좋아하는 것:</strong> 춤, 노래, 친구들과 시간 보내기</p>
+                    <p><strong>싫어하는 것:</strong> 지루한 일상</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Airi</h3>
+                      <p>@airi_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                Airi는 음악과 친구를 좋아하는 쿨계 소녀예요. 지난일은 후회 없이 털어내버리고 앞만 보고 달려나간답니다!
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+        <div class="music-section">
+          <h2 class="music-title">Airi's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://youtu.be/UOxkGD8qRB4?si=kylk7EdArbJ7jYUV')">
+              <div class="card-content">
+                <h3>POP/STARS</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=3Qsw0lQZduA&t=26s')">
+              <div class="card-content">
+                <h3>Your voice so...</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=PT2_F-1esPk&list=RDPT2_F-1esPk&start_radio=1')">
+              <div class="card-content">
+                <h3>Closer</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Naru2 -->
+      <div class="carousel-item" data-character="naru">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / NARU</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active">프로필</button>
+              <button class="nav-btn">갤러리</button>
+              <button class="nav-btn">다이어리</button>
+              <button class="nav-btn">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="green_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Naru</p>
+                    <p><strong>MBTI:</strong> INFP</p>
+                    <p><strong>생일:</strong> 9월 22일</p>
+                    <p><strong>나이:</strong> 18</p>
+                    <p><strong>특징:</strong> 조용하고 사색적인 성격</p>
+                    <p><strong>좋아하는 것:</strong> 독서, 자연, 혼자만의 시간</p>
+                    <p><strong>싫어하는 것:</strong> 시끄러운 환경</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Naru</h3>
+                      <p>@naru_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                 Naru는 자연을 사랑하는 조용한 소녀예요. 책을 읽거나 혼자 생각에 잠기는 시간을 소중히 여기며, 깊이 있는 대화를 좋아해요.
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+
+        <div class="music-section">
+          <h2 class="music-title">Naru's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=0Oi8jDMvd_w&list=RD0Oi8jDMvd_w&start_radio=1')">
+              <div class="card-content">
+                <h3>200%</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=S8cnuIuw5SY&list=RDS8cnuIuw5SY&start_radio=1')">
+              <div class="card-content">
+                <h3>Good-bye Days</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=uJ_1HMAGb4k&list=RDuJ_1HMAGb4k&start_radio=1')">
+              <div class="card-content">
+                <h3>Riptide</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lumi3 -->
+      <div class="carousel-item" data-character="lumi">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / LUMI</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active">프로필</button>
+              <button class="nav-btn">갤러리</button>
+              <button class="nav-btn">다이어리</button>
+              <button class="nav-btn">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="yellow_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Lumi</p>
+                    <p><strong>MBTI:</strong> ENFP</p>
+                    <p><strong>생일:</strong> 7월 17일</p>
+                    <p><strong>나이:</strong>  16</p>
+                    <p><strong>특징:</strong> 사교적이고 활발한 성격</p>
+                    <p><strong>좋아하는 것:</strong> 동물, 산책, 안무 연습, 유튜브 시청</p>
+                    <p><strong>싫어하는 것:</strong> 음식 남기기</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Lumi</h3>
+                      <p>@lumi_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                 Lumi는 사람을 좋아하는 쾌활한 소녀예요. 조용히 있는 사람이 보이면 무조건 먼저 치대는데, 이런 Lumi에게 간택된 MBTI I 사람들, 화이팅...
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+
+        <div class="music-section">
+          <h2 class="music-title">Mero's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=NsY-9MCOIAQ')">
+              <div class="card-content">
+                <h3>ASAP</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=yzC4hFK5P3g')">
+              <div class="card-content">
+                <h3>PONPONPON</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=PIb6AZdTr-A&list=RDPIb6AZdTr-A&start_radio=1')">
+              <div class="card-content">
+                <h3>Girls Just Want To Have Fun</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ <!-- Mero4 -->
+      <div class="carousel-item" data-character="lumi">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / LUMI</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active">프로필</button>
+              <button class="nav-btn">갤러리</button>
+              <button class="nav-btn">다이어리</button>
+              <button class="nav-btn">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="pink_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Lumi</p>
+                    <p><strong>MBTI:</strong> ENFP</p>
+                    <p><strong>생일:</strong> 7월 17일</p>
+                    <p><strong>나이:</strong>  16</p>
+                    <p><strong>특징:</strong> 사교적이고 활발한 성격</p>
+                    <p><strong>좋아하는 것:</strong> 동물, 산책, 안무 연습, 유튜브 시청</p>
+                    <p><strong>싫어하는 것:</strong> 음식 남기기</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Lumi</h3>
+                      <p>@lumi_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                 Lumi는 사람을 좋아하는 쾌활한 소녀예요. 조용히 있는 사람이 보이면 무조건 먼저 치대는데, 이런 Lumi에게 간택된 MBTI I 사람들, 화이팅...
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+
+        <div class="music-section">
+          <h2 class="music-title">Mero's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=NsY-9MCOIAQ')">
+              <div class="card-content">
+                <h3>ASAP</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=yzC4hFK5P3g')">
+              <div class="card-content">
+                <h3>PONPONPON</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=PIb6AZdTr-A&list=RDPIb6AZdTr-A&start_radio=1')">
+              <div class="card-content">
+                <h3>Girls Just Want To Have Fun</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Kael5 -->
+      <div class="carousel-item" data-character="kael">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / KAEL</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active">프로필</button>
+              <button class="nav-btn">갤러리</button>
+              <button class="nav-btn">다이어리</button>
+              <button class="nav-btn">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="black_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Kael</p>
+                    <p><strong>MBTI:</strong> INTJ</p>
+                    <p><strong>생일:</strong> 12월 3일</p>
+                    <p><strong>나이:</strong>  19</p>
+                    <p><strong>특징:</strong> 신비롭고 지적인 성격</p>
+                    <p><strong>좋아하는 것:</strong> 밤하늘, 음악 창작, 철학서</p>
+                    <p><strong>싫어하는 것:</strong> 소음, 번잡함</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Lumi</h3>
+                      <p>@lumi_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                 Kael은 신비로운 분위기를 가진 창작자예요. 밤에 홀로 음악을 만들며, 깊은 사색을 통해 독특한 작품들을 탄생시켜요.
+              </div>
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+
+        <div class="music-section">
+          <h2 class="music-title">Kael's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=uJ_1HMAGb4k')">
+              <div class="card-content">
+                <h3>Vance Joy - Riptide</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=TWcyIpul8OE')">
+              <div class="card-content">
+                <h3>Bon Iver - Holocene</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=ik_BQYbbZ5U')">
+              <div class="card-content">
+                <h3>José González - Heartbeats</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sera6 -->
+      <div class="carousel-item" data-character="sera">
+        <div class="character-section">
+          <div class="browser-window">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <button class="control-btn close"></button>
+                <button class="control-btn minimize"></button>
+                <button class="control-btn maximize"></button>
+              </div>
+              <div class="address-bar">https://character.profile.com / SERA</div>
+              <div class="window-controls">
+                <div class="window-btn">□</div>
+                <div class="window-btn">↗</div>
+                <div class="window-btn">✕</div>
+              </div>
+            </div>
+            
+            <div class="banner">
+              <h1 style="color: #2c5f2d; font-size: 24px; margin-bottom: 10px;">캐릭터 프로필</h1>
+              <p style="color: #666; font-size: 14px;">Character Profile Page</p>
+            </div>
+            
+            <div class="navigation">
+              <button class="nav-btn active">프로필</button>
+              <button class="nav-btn">갤러리</button>
+              <button class="nav-btn">다이어리</button>
+              <button class="nav-btn">방명록</button>
+            </div>
+            
+            <div class="content">
+              <!-- 프로필 섹션 -->
+              <div class="content-section active" id="profile-section">
+                <div class="character-image">
+                  <div class="character-img">
+                    <div class="character-placeholder">
+                       <img src="purple_stand.png" alt="Airi" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="profile-section">
+                  <div class="profile-header">프로필</div>
+                  <div class="profile-info">
+                    <p><strong>이름:</strong> Sera</p>
+                    <p><strong>MBTI:</strong> ISFJ</p>
+                    <p><strong>생일:</strong> 5월 8일</p>
+                    <p><strong>나이:</strong>  20</p>
+                    <p><strong>특징:</strong> 시크하지만 따뜻하고 배려심 깊은 성격</p>
+                    <p><strong>좋아하는 것:</strong> 요리, 원예, 친구들 돌보기</p>
+                    <p><strong>싫어하는 것:</strong> 갈등 상황</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 갤러리 섹션 -->
+              <div class="content-section" id="gallery-section">
+                <div class="gallery-section">
+                  <div class="profile-header">갤러리</div>
+                  <div class="gallery-grid">
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff69b4/ffffff?text=Airi+1')">
+                      <div class="gallery-placeholder">이미지 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff1493/ffffff?text=Airi+2')">
+                      <div class="gallery-placeholder">이미지 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/dc143c/ffffff?text=Airi+3')">
+                      <div class="gallery-placeholder">이미지 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/b22222/ffffff?text=Airi+4')">
+                      <div class="gallery-placeholder">이미지 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ff6347/ffffff?text=Airi+5')">
+                      <div class="gallery-placeholder">이미지 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openImageModal('https://via.placeholder.com/300x300/ffa500/ffffff?text=Airi+6')">
+                      <div class="gallery-placeholder">이미지 6</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 다이어리 섹션 -->
+              <div class="content-section" id="diary-section">
+                <div class="diary-section">
+                  <div class="diary-header">
+                    <div class="diary-avatar">A</div>
+                    <div class="diary-user-info">
+                      <h3>Lumi</h3>
+                      <p>@lumi_diary</p>
+                    </div>
+                  </div>
+                  <div class="diary-posts">
+                    <div class="diary-post">
+                      <div class="diary-post-content">오늘 새로운 안무 연습했어! 지금까지 춰 본 안무중에 제일 어려운듯... 하지만 재밌었다 ㅋㅋㅋ 다들 춤추는 거 좋아해?</div>
+                      <div class="diary-post-time">2시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">친구들이랑 인스타 유명 카페 가서 시그니처 음료 먹었다! 근데 너무 달더라. 요즘 카페 음료들 왜이리 단거야</div>
+                      <div class="diary-post-time">5시간 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">POP/STARS 들어봤어? 중독성 대박임 자꾸 흥얼거리게 되네</div>
+                      <div class="diary-post-time">1일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">MBTI고 오늘의 운세고 뭐고 난 그런거 안 믿는다 </div>
+                      <div class="diary-post-time">2일 전</div>
+                    </div>
+                    <div class="diary-post">
+                      <div class="diary-post-content">집에만 있으니까 심심한데 같이 놀 사람!!!!!</div>
+                      <div class="diary-post-time">3일 전</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 굿즈(방명록) 섹션 -->
+              <div class="content-section" id="goods-section">
+                <div class="goods-section">
+                  <div class="profile-header">방명록 💌</div>
+                  <div class="guestbook-form">
+                    <div class="form-group">
+                      <label for="guestName">닉네임</label>
+                      <input type="text" id="guestName" placeholder="닉네임을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                      <label for="guestMessage">Airi에게 응원 메시지</label>
+                      <textarea id="guestMessage" placeholder="Airi에게 따뜻한 응원 메시지를 남겨주세요!"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="addGuestbookMessage()">메시지 남기기</button>
+                  </div>
+                  <div class="guestbook-messages" id="guestbook-messages">
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Naru</span>
+                        <span class="message-time">방금 전</span>
+                      </div>
+                      <div class="message-content">춤 추는 모습이 정말 멋있어요! 전 춤을 정말 못 춰서 덕분에 대리만족 되는 기분이었어요...</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Mero</span>
+                        <span class="message-time">10분 전</span>
+                      </div>
+                      <div class="message-content">MBTI랑 오늘의 운세는 과학이라니까? 아~~~~~~ 너무해!!!!!!</div>
+                    </div>
+                    <div class="guestbook-message">
+                      <div class="message-header">
+                        <span class="message-author">Kael</span>
+                        <span class="message-time">1시간 전</span>
+                      </div>
+                      <div class="message-content">어제 간 카페는 최악이었어</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="banner-section">
+              <div class="banner-label">정보</div>
+              <div class="banner-content">
+                Sera는 툴툴거리는거 같아도 속으로는 따뜻한 마음의 소유자예요. 모든 일에 정성을 다하며, 주변 사람들에게 안정감을 주는 존재입니다.
+              </div>
+              </div>
+            </div>
+            
+            <div class="footer">
+              2025 DCD 
+            </div>
+          </div>
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+        <div class="music-section">
+          <h2 class="music-title">Sera's Playlist ☆</h2>
+          <div class="music-grid">
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=Os_heh8vPfs')">
+              <div class="card-content">
+                <h3>IU - Through the Night</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=YG0ggHM1PLM')">
+              <div class="card-content">
+                <h3>Norah Jones - Come Away With Me</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=6-v1b9waHWY')">
+              <div class="card-content">
+                <h3>Taylor Swift - Cardigan</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 화살표 네비게이션 -->
+    <div class="nav-arrows">
+      <div class="nav-arrow" id="prevArrow" onclick="previousSlide()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </div>
+      <div class="nav-arrow" id="nextArrow" onclick="nextSlide()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const track = document.getElementById("carouselTrack");
+    const prevArrow = document.getElementById("prevArrow");
+    const nextArrow = document.getElementById("nextArrow");
+    let currentIndex = 0;
+    let scrollStates = [false, false, false, false, false, false];
+    const totalSlides = 6;
+
+    // 화살표 상태 업데이트
+    function updateArrows() {
+      prevArrow.classList.toggle('disabled', currentIndex === 0);
+      nextArrow.classList.toggle('disabled', currentIndex === totalSlides - 1);
+    }
+
+    // 이전 슬라이드
+    function previousSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        scrollStates[currentIndex] = false;
+        moveToIndex(currentIndex);
+        updateScrollState();
+        updateArrows();
+      }
+    }
+
+    // 다음 슬라이드
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        scrollStates[currentIndex] = false;
+        moveToIndex(currentIndex);
+        updateScrollState();
+        updateArrows();
+      }
+    }
+
+    // 휠 이벤트
+    document.addEventListener("wheel", handleWheel, { passive: false });
+
+    function handleWheel(e) {
+      e.preventDefault();
+      
+      const currentItem = document.querySelectorAll('.carousel-item')[currentIndex];
+      const characterSection = currentItem.querySelector('.character-section');
+      const musicSection = currentItem.querySelector('.music-section');
+      const scrollIndicator = currentItem.querySelector('.scroll-indicator');
+      
+      if (e.deltaY > 0) {
+        if (!scrollStates[currentIndex] && musicSection) {
+          scrollStates[currentIndex] = true;
+          characterSection.classList.add('scrolled');
+          musicSection.classList.add('visible');
+          if (scrollIndicator) scrollIndicator.classList.add('hidden');
+        }
+      } else {
+        if (scrollStates[currentIndex] && musicSection) {
+          scrollStates[currentIndex] = false;
+          characterSection.classList.remove('scrolled');
+          musicSection.classList.remove('visible');
+          if (scrollIndicator) scrollIndicator.classList.remove('hidden');
+        }
+      }
+    }
+
+    function moveToIndex(index) {
+      const translateX = -index * window.innerWidth;
+      track.style.transition = "transform 0.4s ease";
+      track.style.transform = `translateX(${translateX}px)`;
+    }
+
+    function updateScrollState() {
+      document.querySelectorAll('.carousel-item').forEach((item, index) => {
+        const characterSection = item.querySelector('.character-section');
+        const musicSection = item.querySelector('.music-section');
+        const scrollIndicator = item.querySelector('.scroll-indicator');
+        
+        if (scrollStates[index] && musicSection) {
+          characterSection.classList.add('scrolled');
+          musicSection.classList.add('visible');
+          if (scrollIndicator) scrollIndicator.classList.add('hidden');
+        } else {
+          characterSection.classList.remove('scrolled');
+          if (musicSection) musicSection.classList.remove('visible');
+          if (scrollIndicator) scrollIndicator.classList.remove('hidden');
+        }
+      });
+    }
+
+    function openYouTube(url) {
+      if (url && url !== '#' && url !== 'YOUR_YOUTUBE_LINK_1') {
+        window.open(url, '_blank');
+      } else {
+        alert('유튜브 링크를 설정해주세요!');
+      }
+    }
+
+    // 탭 전환 기능
+    function switchTab(tabName) {
+      const currentItem = document.querySelectorAll('.carousel-item')[currentIndex];
+      const contentSections = currentItem.querySelectorAll('.content-section');
+      const navBtns = currentItem.querySelectorAll('.nav-btn');
+      
+      // 모든 섹션 숨기기
+      contentSections.forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // 모든 버튼 비활성화
+      navBtns.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // 선택된 섹션 보이기
+      const targetSection = currentItem.querySelector(`#${tabName}-section`);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+      
+      // 선택된 버튼 활성화
+      const targetBtn = currentItem.querySelector(`[data-tab="${tabName}"]`);
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+      }
+    }
+
+    // 이미지 모달 기능
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = imageSrc;
+      modal.style.display = 'block';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+    }
+
+    // 방명록 메시지 추가
+    function addGuestbookMessage() {
+      const nameInput = document.getElementById('guestName');
+      const messageInput = document.getElementById('guestMessage');
+      const messagesContainer = document.getElementById('guestbook-messages');
+      
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+      
+      if (!name || !message) {
+        alert('닉네임과 메시지를 모두 입력해주세요!');
+        return;
+      }
+      
+      // 새 메시지 요소 생성
+      const messageElement = document.createElement('div');
+      messageElement.className = 'guestbook-message';
+      messageElement.innerHTML = `
+        <div class="message-header">
+          <span class="message-author">${name}</span>
+          <span class="message-time">방금 전</span>
+        </div>
+        <div class="message-content">${message}</div>
+      `;
+      
+      // 맨 위에 메시지 추가
+      messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
+      
+      // 입력 필드 초기화
+      nameInput.value = '';
+      messageInput.value = '';
+      
+      // 애니메이션 효과
+      messageElement.style.opacity = '0';
+      messageElement.style.transform = 'translateY(-10px)';
+      setTimeout(() => {
+        messageElement.style.transition = 'all 0.3s ease';
+        messageElement.style.opacity = '1';
+        messageElement.style.transform = 'translateY(0)';
+      }, 100);
+    }
+
+    // 키보드 네비게이션
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        previousSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      } else if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    });
+
+    // 캐릭터 이미지 클릭 이벤트
+    document.addEventListener('DOMContentLoaded', function() {
+      const characterDialogues = {
+        'airi': [
+          "이미 지나간 일에 후회따위 하지 않아.",
+          "오늘 내 운세가 꼴등이라고? 그건 다 미신이야!",
+          "빨리 여름이 왔으면 좋겠네♪"
+        ],
+        'naru': [
+          "그렇게 바라보시면 조금 부끄러워요...",
+          "책 읽는 시간이 가장 행복해요.",
+          "바람이 부니까 제 마음도 차분해지네요."
+        ],
+        'lumi': [
+          "으아~ 강아지 키우고 싶다!",
+          "햇살 너무 좋다~ 뛰어다니고 싶어!!",
+          "오늘은 뭔가 특별한 일이 생길 것 같아!"
+        ],
+        'kael': [
+          "뭐, 네 마음대로 해.",
+          "그렇게까지 할 필요 있나?",
+          "내가 궁금해?"
+        ],
+        'mero': [
+          "(♡ >ω< ♡)",
+          "오늘 내 머리 어때? 귀엽지?",
+          "간식을 너무 많이 먹었나..."
+        ],
+        'sera': [
+          "왜 그렇게 쳐다봐?",
+          "기분이 좋아 보이네.",
+          "또 놀리는 거야?"
+        ]
+      };
+
+      let currentBubble = null;
+
+      // 네비게이션 버튼 이벤트
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('nav-btn')) {
+          const tabName = e.target.getAttribute('data-tab');
+          if (tabName) {
+            switchTab(tabName);
+          }
+        }
+
+        // 캐릭터 이미지 클릭
+        if (e.target.closest('.character-img')) {
+          const img = e.target.closest('.character-img');
+          
+          if (currentBubble) {
+            currentBubble.remove();
+            currentBubble = null;
+          }
+          
+          const clickEffect = document.createElement('div');
+          clickEffect.className = 'click-effect';
+          const rect = img.getBoundingClientRect();
+          clickEffect.style.left = (e.clientX - rect.left - 10) + 'px';
+          clickEffect.style.top = (e.clientY - rect.top - 10) + 'px';
+          img.appendChild(clickEffect);
+          
+          setTimeout(() => {
+            clickEffect.remove();
+          }, 600);
+          
+          const currentCharacter = ['airi', 'mero', 'naru', 'lumi', 'kael', 'sera'][currentIndex];
+          const dialogues = characterDialogues[currentCharacter] || ["안녕하세요!"];
+          const randomDialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
+          
+          const speechBubble = document.createElement('div');
+          speechBubble.className = 'speech-bubble';
+          speechBubble.textContent = randomDialogue;
+          
+          speechBubble.style.position = 'fixed';
+          speechBubble.style.right = (window.innerWidth - rect.left + 20) + 'px';
+          speechBubble.style.top = (rect.top + rect.height/2 - 40) + 'px';
+          
+          document.body.appendChild(speechBubble);
+          currentBubble = speechBubble;
+          
+          setTimeout(() => {
+            speechBubble.classList.add('show');
+          }, 50);
+          
+          setTimeout(() => {
+            if (currentBubble === speechBubble) {
+              speechBubble.classList.remove('show');
+              setTimeout(() => {
+                if (speechBubble.parentNode) {
+                  speechBubble.remove();
+                }
+                if (currentBubble === speechBubble) {
+                  currentBubble = null;
+                }
+              }, 300);
+            }
+          }, 3000);
+        }
+
+        // 브라우저 컨트롤 버튼
+        if (e.target.classList.contains('control-btn')) {
+          if (e.target.classList.contains('close')) {
+            alert('창을 닫을 수 없습니다! ');
+          } else if (e.target.classList.contains('minimize')) {
+            alert('최소화 기능은 데모에서 작동하지 않습니다! ');
+          } else if (e.target.classList.contains('maximize')) {
+            alert('최대화 기능은 데모에서 작동하지 않습니다! ');
+          }
+        }
+
+        // 모달 닫기
+        if (e.target.classList.contains('modal-close') || e.target.classList.contains('modal')) {
+          closeImageModal();
+        }
+      });
+
+      // 브라우저 컨트롤 버튼 효과
+      document.querySelectorAll('.control-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (this.classList.contains('close')) {
+            alert('창을 닫을 수 없습니다! ');
+          } else if (this.classList.contains('minimize')) {
+            alert('최소화 기능은 데모에서 작동하지 않습니다! ');
+          } else if (this.classList.contains('maximize')) {
+            alert('최대화 기능은 데모에서 작동하지 않습니다! ');
+          }
+        });
+      });
+    });
+
+    // 초기화
+    window.addEventListener('load', () => {
+      updateArrows();
+    });
+  </script>
+</body>
+</html>
