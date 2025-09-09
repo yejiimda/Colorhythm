@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-image: url('background.jpg');
+            background-image: url('introbg2.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -20,11 +20,44 @@
             margin: 0;
         }
 
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('introbg2.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #start-button {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            animation: blink 1.5s infinite;
+        }
+
+        #start-button:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.6; }
+        }
+
         header {
             padding: 10px;
             margin-top: 150px;
             text-align: center;
             color: #FF66d8;
+            display: none;
         }
 
         header img {
@@ -52,7 +85,7 @@
             color: #ffffff62;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             z-index: -0;
-            display: block;
+            display: none;
         }
 
         .judgment-effect {
@@ -82,7 +115,7 @@
         }
         
         #game-container {
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: flex-start;
             flex-direction: row;
@@ -136,6 +169,17 @@
             opacity: 0.9;
             z-index: 2;
             box-shadow: 0 0 10px rgba(133, 255, 218, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .note img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 2px;
         }
 
         .long-note {
@@ -332,7 +376,12 @@
     </style>
 </head>
 <body>
-    <header>
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <img id="start-button" src="start.png" alt="Start Game" style="width: 300px; height: auto;">
+    </div>
+
+    <header id="header">
         <img src="logo.png" alt="Rhythm Rush Logo">
     </header>
 
@@ -365,80 +414,95 @@
     </footer>
 
     <script>
-        // 난이도별 패턴 정의 - Normal 난이도로 기본 설정
+        // 난이도별 패턴 정의 - Normal 난이도로 기본 설정 (이미지 추가)
         const patterns = {
             normal: [
-                { time: 800, lane: 'd', speed: 1.5 },
-                { time: 3500, lane: 'd', speed: 1.5 },
-                { time: 4000, lane: 'f', speed: 1.5 },
-                { time: 4500, lane: 'j', speed: 1.5 },
-                { time: 5000, lane: 'f', speed: 1.5 },
-                { time: 6500, lane: 'd', speed: 1.5 },
-                { time: 7500, lane: 'd', speed: 1.5 },
-                { time: 10500, lane: 'f', speed: 1.5 },
-                { time: 12500, lane: 'f', speed: 1.5 },
-                { time: 15500, lane: 'd', speed: 1.5 },
-                { time: 17500, lane: 'd', speed: 1.5 },
-                { time: 19500, lane: 'k', speed: 1.5 },
-                { time: 20500, lane: 'k', speed: 1.5 },
-                { time: 21000, lane: 'k', speed: 1.5 },
-                { time: 21500, lane: 'j', speed: 1.5 },
-                { time: 22000, lane: 'd', speed: 1.5 },
-                { time: 22900, lane: 'd', speed: 1.5 },
-                { time: 24200, lane: 'd', speed: 1.5 },
-                { time: 24300, lane: 'f', speed: 1.5 },
-                { time: 24600, lane: 'j', speed: 1.5 },
-                { time: 25000, lane: 'k', speed: 1.5 },
-                { time: 25500, lane: 'd', speed: 1.5 },
-                { time: 26000, lane: 'f', speed: 1.5 },
-                { time: 26500, lane: 'j', speed: 1.5 },
-                { time: 27000, lane: 'k', speed: 1.5 },
-                { time: 28000, lane: 'd', speed: 1.5 },
-                { time: 28500, lane: 'f', speed: 1.5 },
-                { time: 29000, lane: 'j', speed: 1.5 },
-                { time: 30000, lane: 'k', speed: 1.5 },
-                { time: 31000, lane: 'd', speed: 1.5 },
-                { time: 34000, lane: 'f', speed: 1.5 },
-                { time: 34500, lane: 'f', speed: 1.5 },
-                { time: 35100, lane: 'f', speed: 1.5 },
-                { time: 39000, lane: 'f', speed: 1.5 },
-                { time: 41000, lane: 'f', speed: 1.5 },
-                { time: 41500, lane: 'f', speed: 1.5 },
-                { time: 43000, lane: 'd', speed: 1.5 },
-                { time: 44000, lane: 'd', speed: 1.5 },
-                { time: 48000, lane: 'd', speed: 1.5 },
-                { time: 48500, lane: 'f', speed: 1.5 },
-                { time: 49000, lane: 'j', speed: 1.5 },
-                { time: 49500, lane: 'k', speed: 1.5 },
-                { time: 50000, lane: 'k', speed: 1.5 },
-                { time: 50100, lane: 'j', speed: 1.5 },
-                { time: 52000, lane: 'd', speed: 1.5 },
-                { time: 52800, lane: 'k', speed: 1.5 },
-                { time: 54800, lane: 'k', speed: 1.5 },
-                { time: 55300, lane: 'k', speed: 1.5 },
-                { time: 56000, lane: 'd', speed: 1.5 },
-                { time: 56800, lane: 'f', speed: 1.5 },
-                { time: 57600, lane: 'd', speed: 1.5 },
-                { time: 58400, lane: 'f', speed: 1.5 },
-                { time: 59000, lane: 'f', speed: 1.5 },
-                { time: 60000, lane: 'j', speed: 1.5 },
-                { time: 61000, lane: 'k', speed: 1.5 },
-                { time: 63000, lane: 'j', speed: 1.5 },
-                { time: 65000, lane: 'k', speed: 1.5 },
-                { time: 67000, lane: 'd', speed: 1.5 },
-                { time: 68000, lane: 'f', speed: 1.5 },
-                { time: 69000, lane: 'd', speed: 1.5 },
-                { time: 70000, lane: 'f', speed: 1.5 },
-                { time: 72000, lane: 'd', speed: 1.5 },
-                { time: 72500, lane: 'f', speed: 1.5 },
-                { time: 75000, lane: 'j', speed: 1.5 },
-                { time: 75500, lane: 'k', speed: 1.5 },
-                { time: 76000, lane: 'd', speed: 1.5 },
-                { time: 77000, lane: 'f', speed: 1.5},
-                { time: 77800, lane: 'f', speed: 1.5 },
-                { time: 78500, lane: 'j', speed: 1.5 },
-                { time: 79000, lane: 'k', speed: 1.5 },
-                { time: 80000, lane: 'k', speed: 1.5 }
+                { time: 800, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 1000, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 1200, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 1400, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 1600, lane: 'j', speed: 2, image: 'note1.png' },
+                { time: 1800, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 2000, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 2200, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 2400, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 2600, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 2800, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 3000, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 3200, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 3500, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 3500, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 3700, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 4000, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 4300, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 4600, lane: 'j', speed: 2, image: 'note1.png' },
+                { time: 4900, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 5200, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 5500, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 58500, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 6100, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 6300, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 6600, lane: 'd', speed: 2, image: 'note2.png' },
+                { time: 6900, lane: 'k', speed: 2, image: 'note3.png' },
+                { time: 7200, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 7500, lane: 'k', speed: 2, image: 'note2.png' },
+                { time: 7800, lane: 'j', speed: 2, image: 'note3.png' },
+                { time: 8100, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 8400, lane: 'd', speed: 2, image: 'note2.png' },
+                { time: 8700, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 9000, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 9300, lane: 'j', speed: 2, image: 'note2.png' },
+                { time: 9600, lane: 'k', speed: 2, image: 'note3.png' },
+                { time: 9900, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 10200, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 10500, lane: 'j', speed: 2, image: 'note3.png' },
+                { time: 10800, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 11000, lane: 'd', speed: 2, image: 'note2.png' },
+                { time: 11300, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 11600, lane: 'j', speed: 2, image: 'note1.png' },
+                { time: 11900, lane: 'k', speed: 2, image: 'note2.png' },
+                { time: 12200, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 12500, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 12800, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 13100, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 13400, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 13700, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 14100, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 14400, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 14700, lane: 'd', speed: 2, image: 'note2.png' },
+                { time: 15000, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 15300, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 15600, lane: 'j', speed: 2, image: 'note2.png' },
+                { time: 15900, lane: 'k', speed: 2, image: 'note3.png' },
+                { time: 16200, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 16500, lane: 'j', speed: 2, image: 'note2.png' },
+                { time: 16800, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 17100, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 17400, lane: 'k', speed: 2, image: 'note2.png' },
+                { time: 17700, lane: 'k', speed: 2, image: 'note3.png' },
+                { time: 18000, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 18300, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 18600, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 18900, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 19200, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 19500, lane: 'j', speed: 2, image: 'note3.png' },
+                { time: 19800, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 20100, lane: 'j', speed: 2, image: 'note2.png' },
+                { time: 20400, lane: 'k', speed: 2, image: 'note3.png' },
+                { time: 20700, lane: 'd', speed: 2, image: 'note1.png' },
+                { time: 21000, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 21300, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 21600, lane: 'f', speed: 2, image: 'note1.png' },
+                { time: 21900, lane: 'd', speed: 2, image: 'note2.png' },
+                { time: 22200, lane: 'f', speed: 2, image: 'note3.png' },
+                { time: 22500, lane: 'j', speed: 2, image: 'note1.png' },
+                { time: 22800, lane: 'k', speed: 2, image: 'note2.png' },
+                { time: 23100, lane: 'd', speed: 2, image: 'note3.png' },
+                { time: 23400, lane: 'f', speed: 2, image: 'note1.png'},
+                { time: 23700, lane: 'f', speed: 2, image: 'note2.png' },
+                { time: 24000, lane: 'j', speed: 2, image: 'note3.png' },
+                { time: 24300, lane: 'k', speed: 2, image: 'note1.png' },
+                { time: 24600, lane: 'k', speed: 2, image: 'note2.png' }
             ]
         };
 
@@ -493,13 +557,25 @@
             }, 600);
         }
 
-        // 노트 생성 함수
+        // 노트 생성 함수 (이미지 지원 추가)
         function createNote(laneKey, noteData) {
             const lane = lanes[laneKey];
             if (!lane) return;
 
             const note = document.createElement('div');
             note.classList.add('note');
+
+            // 이미지가 있는 경우 이미지 추가
+            if (noteData.image) {
+                const img = document.createElement('img');
+                img.src = noteData.image;
+                img.alt = 'Note';
+                img.onerror = function() {
+                    // 이미지 로드 실패 시 기본 스타일 유지
+                    this.style.display = 'none';
+                };
+                note.appendChild(img);
+            }
 
             if (noteData.type === 'long') {
                 note.classList.add('long-note');
@@ -646,15 +722,15 @@
                     <h1>Game Results</h1>
                     <div class="result-stats">
                         <div class="stat-item">
-                            <span class="stat-label">Total Score</span>
+                            <span class="stat-label">점수</span>
                             <span class="stat-value">${score}</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Max Combo</span>
+                            <span class="stat-label">최대 콤보</span>
                             <span class="stat-value">${maxCombo}</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">Accuracy</span>
+                            <span class="stat-label">정확도</span>
                             <span class="stat-value">${accuracy}%</span>
                         </div>
                         <div class="result-breakdown">
@@ -673,7 +749,7 @@
                         </div>
                     </div>
                     <div class="result-actions">
-                        <button id="restart-btn" class="btn">Restart</button>
+                        <button id="restart-btn" class="btn">다시하기</button>
                     </div>
                 </div>
             `;
@@ -681,6 +757,12 @@
             document.body.appendChild(resultScreen);
 
             document.getElementById('restart-btn').addEventListener('click', restartGame);
+            document.getElementById('character-select-btn').addEventListener('click', function() {
+                alert('캐릭터 선택 기능은 향후 추가될 예정입니다!');
+            });
+            document.getElementById('difficulty-btn').addEventListener('click', function() {
+                alert('난이도 설정 기능은 향후 추가될 예정입니다!');
+            });
         }
 
         // 게임 재시작 함수
