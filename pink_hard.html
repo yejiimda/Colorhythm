@@ -52,56 +52,33 @@
             color: #ffffff62;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
             z-index: -0;
-            display: none;
+            display: block;
         }
 
-        /* Loading Screen */
-        .loading-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        .judgment-effect {
+            position: absolute;
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
         }
 
-        .loading-bar {
-            width: 300px;
-            height: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-            margin-top: 20px;
+        .judgment-effect.perfect {
+            color: #ff85c2;
         }
 
-        .loading-progress {
-            height: 100%;
-            background-color: #FF66D8;
-            width: 0;
-            animation: loadingAnimation 2s forwards;
+        .judgment-effect.good {
+            color: #00ffaa;
         }
 
-        @keyframes loadingAnimation {
-            from {
-                width: 0;
-            }
-            to {
-                width: 100%;
-            }
+        .judgment-effect.miss {
+            color: #ff4444;
         }
 
-
-
-
-        .difficulty-btn:active::before {
-            box-shadow: 
-                inset 0 1px 2px rgba(255,255,255,0.7),
-                0 -1px 2px rgba(0,0,0,0.2);
-        }
-
-        /* 상태 표시 스타일 */
-        .stats-display {
-            display: none;
+        .judgment-effect.fade-out {
+            opacity: 0;
         }
         
         #game-container {
@@ -119,7 +96,6 @@
             background-position: center;
         }
 
-        /* 레인 스타일 수정 */
         .lane {
             display: flex;
             justify-content: center;
@@ -132,7 +108,6 @@
             overflow: hidden;
         }
 
-        /* 새로운 키 레이블 스타일 */
         .key-label {
             position: absolute;
             bottom: 50px;
@@ -163,7 +138,6 @@
             box-shadow: 0 0 10px rgba(133, 255, 218, 0.5);
         }
 
-        /* 롱노트 스타일 */
         .long-note {
             background-color: #ff85c2;
             height: 100px !important;
@@ -192,7 +166,6 @@
             box-shadow: 0 0 10px rgba(255, 133, 194, 0.5);
         }
 
-        /* 노트 홀딩 상태 */
         .note.holding {
             background-color: #ff3399;
             opacity: 0.8;
@@ -259,848 +232,7 @@
             background-color: #bff8e0 !important;
             animation: hitEffect 1s ease-out, glow 0.6s ease-out;
         }
-    </style>
-</head>
-<body>
-    <header>
-        <img src="logo.png" alt="Rhythm Rush Logo">
-    </header>
-    
-    <!-- Loading Screen -->
-    <div class="loading-wrap" id="loading-screen">
-        <div class="loading-text">☆⋰˚☆로딩중。。。☆⋰˚☆\( ˆoˆ )/</div>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-            <button id="start-button">게임 시작</button>
-        </div>
-    </div>
 
-
-
-    <!-- Game Container -->
-    <div class="judgment-display" id="judgment"></div>
-    <div class="combo-display" id="combo">0</div>
-    <audio id="game-audio" src="pink1.mp3" preload="auto"></audio>
-    <div id="game-container" style="display:none;">
-        <div class="lane" id="lane-d">
-            <div class="key-label">D</div>
-            <div class="judgment-line"></div>
-        </div>
-        <div class="lane" id="lane-f">
-            <div class="key-label">F</div>
-            <div class="judgment-line"></div>
-        </div>
-        <div class="lane" id="lane-j">
-            <div class="key-label">J</div>
-            <div class="judgment-line"></div>
-        </div>
-        <div class="lane" id="lane-k">
-            <div class="key-label">K</div>
-            <div class="judgment-line"></div>
-        </div>
-        <div id="score">0</div>
-    </div>
-
-    <footer id="contact">
-        <p>© 2025 디콘디 임예지</p>
-    </footer>
-
-    <script>
-        // 게임 로직은 원본과 동일하게 유지
-        function startGameWithDifficulty(difficulty) {
-            document.getElementById('difficulty-select').style.display = 'none';
-            document.getElementById('game-container').style.display = 'flex';
-            document.querySelector('.combo-display').style.display = 'block';
-            // 여기에 실제 게임 시작 로직 추가
-        }
-
-        // 로딩 화면 처리
-        document.getElementById('start-button').addEventListener('click', function() {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('difficulty-select').style.display = 'flex';
-        });
-    </script>
-</body>
-</html>
-
-   <script>
-    
-        // 난이도별 패턴 정의
-        const patterns = {
-    easy: [
-        { time: 6700, lane: 'd', speed: 1.3 },//1
-        { time: 10500, lane: 'f', speed: 1.3 },//2
-        { time: 12500, lane: 'f', speed: 1.3 },//3
-        { time: 15100, lane: 'd', speed: 1.3 },//4
-        { time: 17500, lane: 'd', speed: 1.3 },//5
-        { time: 19500, lane: 'k', speed: 1.3 },//6
-        { time: 21500, lane: 'k', speed: 1.3 },//7
-        { time: 23000, lane: 'k', speed: 1.3 },//8
-        { time: 25000, lane: 'j', speed: 1.3 },//9
-        { time: 26000, lane: 'd', speed: 1.3 },//10
-        { time: 28000, lane: 'd', speed: 1.3 }, //11
-        { time: 34000, lane: 'd', speed: 1.3 },///12
-        { time: 36000, lane: 'f', speed: 1.3 },//13
-        { time: 41000, lane: 'f', speed: 1.3 },//14
-        { time: 44000, lane: 'j', speed: 1.3 },//15
-        { time: 48000, lane: 'd', speed: 1.3 },//16
-        { time: 53000, lane: 'f', speed: 1.3 },//17
-        { time: 59000, lane: 'j', speed: 1.3 },//18
-        { time: 62000, lane: 'j', speed: 1.3 },//19
-        { time: 68000, lane: 'f', speed: 1.3 },//20
-        { time: 72000, lane: 'd', speed: 1.3 },//21
-        { time: 75000, lane: 'd', speed: 1.3 },//21
-        { time: 79000, lane: 'd', speed: 1.3 },//21
-        { time: 80000, lane: 'd', speed: 1.3 }//21
-    ],
-    normal: [
-        { time: 800, lane: 'd', speed: 1.5 },
-        { time: 3500, lane: 'd', speed: 1.5 },
-        { time: 4000, lane: 'f', speed: 1.5 },
-        { time: 4500, lane: 'j', speed: 1.5 },
-        { time: 5000, lane: 'f', speed: 1.5 },
-        { time: 6500, lane: 'd', speed: 1.5 },// 박자맞음
-        { time: 7500, lane: 'd', speed: 1.5 },
-        { time: 10500, lane: 'f', speed: 1.5 },// 박자맞음
-        { time: 12500, lane: 'f', speed: 1.5 },// 박자맞음
-        { time: 15500, lane: 'd', speed: 1.5 },
-        { time: 17500, lane: 'd', speed: 1.5 },
-        { time: 19500, lane: 'k', speed: 1.5 },
-        { time: 20500, lane: 'k', speed: 1.5 },
-        { time: 21000, lane: 'k', speed: 1.5 },
-        { time: 21500, lane: 'j', speed: 1.5 },
-        { time: 22000, lane: 'd', speed: 1.5 },
-        { time: 22900, lane: 'd', speed: 1.5 },
-        { time: 24200, lane: 'd', speed: 1.5 },
-        { time: 24300, lane: 'f', speed: 1.5 },
-        { time: 24600, lane: 'j', speed: 1.5 },
-        { time: 25000, lane: 'k', speed: 1.5 },
-        { time: 25500, lane: 'd', speed: 1.5 },
-        { time: 26000, lane: 'f', speed: 1.5 },
-        { time: 26500, lane: 'j', speed: 1.5 },
-        { time: 27000, lane: 'k', speed: 1.5 },
-        { time: 28000, lane: 'd', speed: 1.5 },
-        { time: 28500, lane: 'f', speed: 1.5 },
-        { time: 29000, lane: 'j', speed: 1.5 },
-        { time: 30000, lane: 'k', speed: 1.5 },
-        { time: 31000, lane: 'd', speed: 1.5 },
-        { time: 34000, lane: 'f', speed: 1.5 },
-        { time: 34500, lane: 'f', speed: 1.5 },
-        { time: 35100, lane: 'f', speed: 1.5 },
-        { time: 39000, lane: 'f', speed: 1.5 },
-        { time: 41000, lane: 'f', speed: 1.5 },
-        { time: 41500, lane: 'f', speed: 1.5 },
-        { time: 43000, lane: 'd', speed: 1.5 },
-        { time: 44000, lane: 'd', speed: 1.5 },
-        { time: 48000, lane: 'd', speed: 1.5 },
-        { time: 48500, lane: 'f', speed: 1.5 },
-        { time: 49000, lane: 'j', speed: 1.5 },
-        { time: 49500, lane: 'k', speed: 1.5 },
-        { time: 50000, lane: 'k', speed: 1.5 },
-        { time: 50100, lane: 'j', speed: 1.5 },
-        { time: 52000, lane: 'd', speed: 1.5 },
-        { time: 52800, lane: 'k', speed: 1.5 },
-        { time: 54800, lane: 'k', speed: 1.5 },
-        { time: 55300, lane: 'k', speed: 1.5 },
-
-
-        { time: 56000, lane: 'd', speed: 1.5 },
-        { time: 56800, lane: 'f', speed: 1.5 },
-        { time: 57600, lane: 'd', speed: 1.5 },
-        { time: 58400, lane: 'f', speed: 1.5 },
-
-        { time: 59000, lane: 'f', speed: 1.5 },
-        { time: 60000, lane: 'j', speed: 1.5 },
-        { time: 61000, lane: 'k', speed: 1.5 },
-        { time: 63000, lane: 'j', speed: 1.5 },
-        { time: 65000, lane: 'k', speed: 1.5 },
-        { time: 67000, lane: 'd', speed: 1.5 },
-        { time: 68000, lane: 'f', speed: 1.5 },
-        { time: 69000, lane: 'd', speed: 1.5 },
-        { time: 70000, lane: 'f', speed: 1.5 },
-        { time: 72000, lane: 'd', speed: 1.5 },
-        { time: 72500, lane: 'f', speed: 1.5 },
-        { time: 75000, lane: 'j', speed: 1.5 },
-        { time: 75500, lane: 'k', speed: 1.5 },
-        { time: 75500, lane: 'k', speed: 1.5},
-        { time: 76000, lane: 'd', speed: 1.5 },
-        { time: 77000, lane: 'f', speed: 1.5},
-        { time: 77800, lane: 'f', speed: 1.5 },
-        { time: 78500, lane: 'j', speed: 1.5 },
-        { time: 79000, lane: 'k', speed: 1.5 },
-        { time: 80000, lane: 'k', speed: 1.5 }
-    ],
-    hard: [
-        { time: 1100, lane: 'f', speed: 2.7},
-        { time: 1300, lane: 'j', speed: 2.7},
-        { time: 1500, lane: 'k', speed: 2.7},
-        { time: 1700, lane: 'f', speed: 2.7},
-        { time: 1900, lane: 'j', speed: 2.7},
-        { time: 2100, lane: 'k', speed: 2.7},
-        { time: 2300, lane: 'f', speed: 2.7},
-        { time: 2300, lane: 'j', speed: 2.7},
-        { time: 2500, lane: 'd', speed: 2.7},
-        { time: 2700, lane: 'j', speed: 2.7},
-        { time: 2700, lane: 'k', speed: 2.7},
-        { time: 3000, lane: 'd', speed: 2.7},
-        { time: 3000, lane: 'f', speed: 2.7},
-        { time: 3300, lane: 'd', speed: 2.7},
-        { time: 3500, lane: 'd', speed: 2.7}, //박자
-        { time: 3700, lane: 'f', speed: 2.7}, //박자
-        { time: 3900, lane: 'j', speed: 2.7}, //박자
-        { time: 4100, lane: 'd', speed: 2.7}, //세트
-        { time: 4100, lane: 'f', speed: 2.7}, 
-        { time: 4300, lane: 'j', speed: 2.7},
-        { time: 4520, lane: 'd', speed: 2.7},
-        { time: 4520, lane: 'f', speed: 2.7},
-        { time: 4960, lane: 'd', speed: 2.7},
-        { time: 5200, lane: 'f', speed: 2.7},
-        { time: 5200, lane: 'j', speed: 2.7},
-        { time: 5500, lane: 'j', speed: 2.7 },
-        { time: 5700, lane: 'k', speed: 2.7},
-        { time: 5900, lane: 'k', speed: 2.7},
-        { time: 6100, lane: 'd', speed: 2.7},
-        { time: 6300, lane: 'd', speed: 2.7},
-        { time: 6300, lane: 'f', speed: 2.7},
-        { time: 6500, lane: 'j', speed: 2.7},
-        { time: 6500, lane: 'k', speed: 2.7},
-        { time: 6700, lane: 'd', speed: 2.7},
-    
-        { time: 7100, lane: 'd', speed: 2.7},
-        { time: 7100, lane: 'f', speed: 2.7},
-        { time: 7300, lane: 'k', speed: 2.7},
-        { time: 7500, lane: 'j', speed: 2.7},
-        { time: 7500, lane: 'k', speed: 2.7},
-        { time: 7900, lane: 'd',type: 'long', duration:4000, speed: 2.7},//라라
-        { time: 8100, lane: 'j', speed: 2.7},
-        { time: 8300, lane: 'k', speed: 2.7},
-        { time: 8500, lane: 'd', speed: 2.7},
-        { time: 8700, lane: 'k', speed: 2.7},
-        { time: 8900, lane: 'f', speed: 2.7},
-        { time: 9100, lane: 'd', speed: 2.7},
-        { time: 9300, lane: 'k', speed: 2.7},
-        { time: 9500, lane: 'd', speed: 2.7},
-        { time: 9700, lane: 'd', speed: 2.7},
-        { time: 9900, lane: 'k', speed: 2.7},
-        { time: 10200, lane: 'd', speed: 2.7},
-        { time: 10400, lane: 'd', speed: 2.7},
-        { time: 10600, lane: 'f', speed: 2.7},
-        { time: 10800, lane: 'k', type: 'long', duration:1000,speed: 2.7},
-        { time: 10900, lane: 'd',speed: 2.7},
-        { time: 11100, lane: 'f',speed: 2.7},
-        { time: 11300, lane: 'd', type: 'long', duration:2000,speed: 2.7},
-        { time: 11500, lane: 'j', speed: 2.7},
-        { time: 11800, lane: 'f', speed: 2.7},
-        { time: 12000, lane: 'f', speed: 2.7},
-        { time: 12000, lane: 'j', speed: 2.7},
-        { time: 12200, lane: 'd', speed: 2.7},
-        { time: 12400, lane: 'f', speed: 2.7},
-        { time: 12600, lane: 'f', speed: 2.7},
-        { time: 12800, lane: 'j', speed: 2.7},
-        { time: 13000, lane: 'k', speed: 2.7},
-        { time: 13200, lane: 'd', speed: 2.7},
-        { time: 13400, lane: 'd', speed: 2.7},
-        { time: 13600, lane: 'f', speed: 2.7},
-        { time: 13800, lane: 'j', speed: 2.7},
-        {time: 14000, lane: 'd', speed: 2.7},
-        {time: 14000, lane: 'f', speed: 2.7},
-        { time: 14400, lane: 'k', speed: 2.7},
-        { time: 14600, lane: 'd', speed: 2.7},
-        { time: 14800, lane: 'k', type: 'long', duration:3000,speed: 2.7},
-        { time: 15100, lane: 'd', speed: 2.7},
-        { time: 15300, lane: 'j', speed: 2.7},
-        { time: 15300, lane: 'k', speed: 2.7},
-        { time: 15600, lane: 'd', speed: 2.7},
-        { time: 15800, lane: 'j', speed: 2.7},
-        { time: 15800, lane: 'f', speed: 2.7},
-        { time: 16100, lane: 'f', speed: 2.7},
-        { time: 16300, lane: 'j', speed: 2.7},
-        { time: 16600, lane: 'f', speed: 2.7},
-        { time: 16600, lane: 'j', speed: 2.7},
-        { time: 16800, lane: 'f', speed: 2.7},
-        { time: 17000, lane: 'd', speed: 2.7},
-        { time: 17200, lane: 'd', speed: 2.7},
-        { time: 17400, lane: 'f', speed: 2.7},
-        { time: 17600, lane: 'k', speed: 2.7},
-        { time: 17800, lane: 'f', speed: 2.7},
-        { time: 17600, lane: 'f', speed: 2.7},
-        { time: 17800, lane: 'j', speed: 2.7},
-        { time: 18000, lane: 'd', speed: 2.7},
-        { time: 18200, lane: 'd', speed: 2.7},
-        { time: 18400, lane: 'f', speed: 2.7},
-        { time: 18600, lane: 'k', speed: 2.7},
-        { time: 18800, lane: 'd', speed: 2.7},
-        { time: 19000, lane: 'f', speed: 2.7},
-        { time: 19000, lane: 'j', speed: 2.7},
-        { time: 19200, lane: 'k',speed: 2.7},
-        { time: 19400, lane: 'k', speed: 2.7},
-        { time: 19600, lane: 'd', speed: 2.7}, 
-        { time: 19750, lane: 'k', speed: 2.7}, 
-        { time: 19950, lane: 'f', speed: 2.7}, 
-        { time: 20150, lane: 'k', speed: 2.7},
-        { time: 20300, lane: 'k', speed: 2.7},
-        { time: 20500, lane: 'd', speed: 2.7},
-        { time: 20700, lane: 'k', speed: 2.7},
-        { time: 20900, lane: 'j', speed: 2.7},
-        { time: 21100, lane: 'f', speed: 2.7},
-        { time: 21300, lane: 'f', speed: 2.7},
-        { time: 21500, lane: 'f', speed: 2.7},
-        { time: 21700, lane: 'k', speed: 2.7},
-        { time: 21900, lane: 'j', speed: 2.7},
-        { time: 22100, lane: 'd',speed: 2.7},
-        { time: 22300, lane: 'j', speed: 2.7},
-        { time: 22300, lane: 'k', speed: 2.7},
-        { time: 22500, lane: 'j', speed: 2.7},
-        { time: 22700, lane: 'd', speed: 2.7},
-        { time: 22900, lane: 'f', speed: 2.7},
-        { time: 23100, lane: 'k', speed: 2.7},
-        { time: 23300, lane: 'd', speed: 2.7},
-        { time: 23500, lane: 'j', speed: 2.7},
-        { time: 23700, lane: 'd', speed: 2.7},
-        { time: 23900, lane: 'd', speed: 2.7},
-        { time: 24100, lane: 'k', speed: 2.7},
-        { time: 24300, lane: 'j', speed: 2.7},
-        { time: 24500, lane: 'd', speed: 2.7},
-        { time: 24700, lane: 'd', speed: 2.7},
-        { time: 24900, lane: 'k', speed: 2.7},
-        { time: 25100, lane: 'd', speed: 2.7},
-        { time: 25300, lane: 'k', speed: 2.7},
-        { time: 25500, lane: 'd', speed: 2.7},
-        { time: 25700, lane: 'f', speed: 2.7},
-        { time: 25700, lane: 'k', speed: 2.7},
-        { time: 25900, lane: 'f',  speed: 2.7},
-        { time: 26100, lane: 'd', speed: 2.7},
-        { time: 26300, lane: 'f', speed: 2.7},
-        { time: 26500, lane: 'j', speed: 2.7},
-        { time: 26700, lane: 'd', speed: 2.7},
-        { time: 26900, lane: 'f', speed: 2.7},
-        { time: 27100, lane: 'j', speed: 2.7},
-        { time: 27300, lane: 'k', speed: 2.7},
-        { time: 27500, lane: 'j', speed: 2.7},
-        { time: 27700, lane: 'j', speed: 2.7},
-        { time: 27900, lane: 'k', speed: 2.7},
-        { time: 28100, lane: 'd', speed: 2.7},
-        { time: 28300, lane: 'j', speed: 2.7},
-        { time: 28500, lane: 'd', speed: 2.7},
-        { time: 28700, lane: 'j', speed: 2.7},
-        { time: 28900, lane: 'k', speed: 2.7},
-        { time: 29100, lane: 'k', speed: 2.7},
-        { time: 29300, lane: 'k', speed: 2.7},
-        { time: 29500, lane: 'd', speed: 2.7},
-        { time: 29700, lane: 'f', speed: 2.7},
-        { time: 29900, lane: 'f', speed: 2.7},
-        { time: 30100, lane: 'j', speed: 2.7},
-        { time: 30300, lane: 'k', speed: 2.7},
-        { time: 30500, lane: 'f', speed: 2.7},
-        { time: 30700, lane: 'k', speed: 2.7},
-        { time: 30900, lane: 'f', speed: 2.7},
-        { time: 31100, lane: 'j', speed: 2.7},
-        { time: 31300, lane: 'd', speed: 2.7},
-        { time: 31500, lane: 'd', speed: 2.7},
-        { time: 31700, lane: 'k', speed: 2.7},
-        { time: 31900, lane: 'f', speed: 2.7},
-        { time: 32100, lane: 'k', speed: 2.7},
-        { time: 32300, lane: 'f', speed: 2.7},
-        { time: 32500, lane: 'd', speed: 2.7},
-        { time: 32700, lane: 'j', speed: 2.7},
-        { time: 32900, lane: 'd', speed: 2.7},
-        { time: 33100, lane: 'd', speed: 2.7},
-        { time: 33300, lane: 'j',speed: 2.7},
-        { time: 33300, lane: 'f',speed: 2.7},
-        { time: 33500, lane: 'j', speed: 2.7},
-        { time: 33700, lane: 'd', speed: 2.7},
-        { time: 33900, lane: 'j', speed: 2.7},
-        { time: 34100, lane: 'd', speed: 2.7},
-        { time: 34300, lane: 'k', speed: 2.7},
-        { time: 34500, lane: 'd', speed: 2.7},
-        { time: 34700, lane: 'f', speed: 2.7},
-        { time: 34900, lane: 'j', speed: 2.7},
-        { time: 35100, lane: 'k',speed: 2.7},
-        { time: 35300, lane: 'f', speed: 2.7},
-        { time: 35500, lane: 'd', speed: 2.7},
-        { time: 35700, lane: 'd', speed: 2.7},
-        { time: 35900, lane: 'f', speed: 2.7},
-        { time: 36100, lane: 'd', speed: 2.7},
-        { time: 36300, lane: 'j', speed: 2.7},
-        { time: 36500, lane: 'k', speed: 2.7},
-        { time: 36700, lane: 'd', speed: 2.7},
-        { time: 36900, lane: 'k', speed: 2.7},
-        { time: 37100, lane: 'd', speed: 2.7},
-        { time: 37300, lane: 'd', speed: 2.7},
-        { time: 37500, lane: 'f', speed: 2.7},
-        { time: 37700, lane: 'j', speed: 2.7},
-        { time: 37900, lane: 'f', speed: 2.7},
-        { time: 38100, lane: 'j', speed: 2.7},
-        { time: 38300, lane: 'd', speed: 2.7},
-        { time: 38500, lane: 'f', speed: 2.7},
-        { time: 38700, lane: 'k', speed: 2.7},
-        { time: 38900, lane: 'j', speed: 2.7},
-        { time: 39100, lane: 'k', speed: 2.7},
-        { time: 39300, lane: 'k', speed: 2.7},
-        { time: 39500, lane: 'd', speed: 2.7},
-        { time: 39700, lane: 'd', speed: 2.7},
-        { time: 39900, lane: 'j', speed: 2.7},
-        { time: 40100, lane: 'f', speed: 2.7},
-        { time: 40100, lane: 'j', speed: 2.7},
-        { time: 40300, lane: 'j', speed: 2.7},
-        { time: 40500, lane: 'd',type: 'long', duration:3000, speed: 2.7},
-        { time: 40700, lane: 'j', speed: 2.7},
-        { time: 40900, lane: 'k', speed: 2.7},
-        { time: 41100, lane: 'd', speed: 2.7},
-        { time: 41300, lane: 'f', speed: 2.7},
-        { time: 41500, lane: 'f', speed: 2.7},
-        { time: 41700, lane: 'f', speed: 2.7},
-        { time: 41900, lane: 'd', speed: 2.7},
-        { time: 42100, lane: 'j', speed: 2.7},
-        { time: 42300, lane: 'k', speed: 2.7},
-        { time: 42500, lane: 'd', speed: 2.7},
-        { time: 42700, lane: 'k', speed: 2.7},
-        { time: 42900, lane: 'd', speed: 2.7},
-        { time: 43100, lane: 'j',type: 'long', duration:3000, speed: 2.7},
-        { time: 43300, lane: 'f',  speed: 2.7},
-        { time: 43300, lane: 'j',  speed: 2.7},
-        { time: 43500, lane: 'd', speed: 2.7},
-        { time: 43700, lane: 'd', speed: 2.7},
-        { time: 43900, lane: 'j', speed: 2.7},
-        { time: 44100, lane: 'k', speed: 2.7},
-        { time: 44300, lane: 'j', speed: 2.7},
-        { time: 44500, lane: 'k', speed: 2.7},
-        { time: 44700, lane: 'd', speed: 2.7},
-        { time: 44900, lane: 'd', speed: 2.7},
-        { time: 45100, lane: 'f', speed: 2.7},
-        { time: 45300, lane: 'd', speed: 2.7},
-        { time: 45500, lane: 'j', speed: 2.7},
-        { time: 45700, lane: 'd', speed: 2.7},
-        { time: 45900, lane: 'f', speed: 2.7},
-        { time: 46100, lane: 'j', speed: 2.7},
-        { time: 46300, lane: 'k', speed: 2.7},
-        { time: 46500, lane: 'k', speed: 2.7},
-        { time: 46700, lane: 'd', speed: 2.7},
-        { time: 46900, lane: 'd', speed: 2.7},
-        { time: 47100, lane: 'f', speed: 2.7},
-        { time: 47500, lane: 'j', speed: 2.7},
-        { time: 47700, lane: 'k', speed: 2.7},
-        { time: 47900, lane: 'k', speed: 2.7},
-        { time: 48100, lane: 'd', speed: 2.7},
-        { time: 48300, lane: 'k', speed: 2.7},
-        { time: 48500, lane: 'f', speed: 2.7},
-        { time: 48700, lane: 'f', speed: 2.7},
-        { time: 48900, lane: 'j', speed: 2.7},
-        { time: 49100, lane: 'd', speed: 2.7},
-        { time: 49300, lane: 'f', speed: 2.7},
-        { time: 49300, lane: 'j', speed: 2.7},
-        { time: 49500, lane: 'd', speed: 2.7},
-        { time: 49700, lane: 'f', speed: 2.7},
-        { time: 49900, lane: 'f', speed: 2.7},
-        { time: 50100, lane: 'j', speed: 2.7},
-        { time: 50300, lane: 'k', speed: 2.7},
-        { time: 50500, lane: 'j', speed: 2.7},
-        { time: 50700, lane: 'd', speed: 2.7},
-        { time: 50900, lane: 'd', speed: 2.7},
-        { time: 51100, lane: 'd', speed: 2.7},
-        { time: 51300, lane: 'f', speed: 2.7},
-        { time: 51500, lane: 'j', speed: 2.7},
-        { time: 51700, lane: 'd', speed: 2.7},
-        { time: 51900, lane: 'f', speed: 2.7},
-        { time: 52100, lane: 'j', speed: 2.7},
-        { time: 52300, lane: 'k', speed: 2.7},
-        { time: 52300, lane: 'j', speed: 2.7},
-        { time: 52700, lane: 'd', speed: 2.7},
-        { time: 52900, lane: 'f', speed: 2.7},
-        { time: 53100, lane: 'd', speed: 2.7},
-        { time: 53300, lane: 'k', speed: 2.7},
-        { time: 53500, lane: 'k', speed: 2.7},
-        { time: 53700, lane: 'k', speed: 2.7},
-        { time: 53900, lane: 'd', speed: 2.7},
-        { time: 54100, lane: 'k', speed: 2.7},
-        { time: 54300, lane: 'd', speed: 2.7},
-        { time: 54500, lane: 'k', speed: 2.7},
-        { time: 54700, lane: 'f', speed: 2.7},
-        { time: 54900, lane: 'f', speed: 2.7},
-        { time: 55100, lane: 'd', speed: 2.7},
-        { time: 55300, lane: 'f',speed: 2.7},
-        { time: 55300, lane: 'j',speed: 2.7},
-        { time: 55500, lane: 'd', speed: 2.7},
-        { time: 55700, lane: 'j', speed: 2.7},
-        { time: 55900, lane: 'f', speed: 2.7},
-        { time: 56100, lane: 'k', speed: 2.7},
-        { time: 56100, lane: 'j', speed: 2.7},
-        { time: 56500, lane: 'k', speed: 2.7},
-        { time: 56700, lane: 'd', speed: 2.7},
-        { time: 56700, lane: 'f', speed: 2.7},
-        { time: 56900, lane: 'j', speed: 2.7},
-        { time: 57100, lane: 'd', speed: 2.7},
-        { time: 57300, lane: 'j', speed: 2.7},
-        { time: 57500, lane: 'd', speed: 2.7},
-        { time: 57700, lane: 'f', speed: 2.7},
-        { time: 57900, lane: 'j', speed: 2.7},
-        { time: 58100, lane: 'k',  speed: 2.7},
-        { time: 58300, lane: 'j', speed: 2.7},
-        { time: 58300, lane: 'k', speed: 2.7},
-        { time: 58500, lane: 'j', speed: 2.7},
-        { time: 58700, lane: 'd', speed: 2.7},
-        { time: 58700, lane: 'k', speed: 2.7},
-        { time: 58900, lane: 'j', speed: 2.7},
-        { time: 59100, lane: 'd', speed: 2.7},
-        { time: 59300, lane: 'f', speed: 2.7},
-        { time: 59500, lane: 'f', speed: 2.7},
-        { time: 59700, lane: 'd', speed: 2.7},
-        { time: 59900, lane: 'j', speed: 2.7},
-        { time: 60100, lane: 'k', speed: 2.7},
-        { time: 60300, lane: 'j', speed: 2.7},
-        { time: 60500, lane: 'd', speed: 2.7},
-        { time: 60700, lane: 'j', speed: 2.7},
-        { time: 60900, lane: 'd', type: 'long', duration:3000, speed: 2.7},
-        { time: 61100, lane: 'j', speed: 2.7},
-        { time: 61300, lane: 'k', speed: 2.7},
-        { time: 61500, lane: 'k', speed: 2.7},
-        { time: 61700, lane: 'd', speed: 2.7},
-        { time: 61900, lane: 'j', speed: 2.7},
-        { time: 62100, lane: 'j', speed: 2.7},
-        { time: 62300, lane: 'f', speed: 2.7},
-        { time: 62500, lane: 'f', speed: 2.7},
-        { time: 62700, lane: 'k', speed: 2.7},
-        { time: 62900, lane: 'j', speed: 2.7},
-        { time: 63100, lane: 'd', type: 'long', duration:3000, speed: 2.7},
-        { time: 63300, lane: 'k', speed: 2.7},
-        { time: 63500, lane: 'f', speed: 2.7},
-        { time: 63700, lane: 'd', speed: 2.7},
-        { time: 63900, lane: 'j', speed: 2.7},
-        { time: 64100, lane: 'd', speed: 2.7},
-        { time: 64100, lane: 'f', speed: 2.7},
-        { time: 64300, lane: 'j', speed: 2.7},
-        { time: 64500, lane: 'j', speed: 2.7},
-        { time: 64500, lane: 'f', speed: 2.7},
-        { time: 64700, lane: 'k', speed: 2.7},
-        { time: 64900, lane: 'd', speed: 2.7},
-        { time: 65100, lane: 'f', speed: 2.7},
-        { time: 65300, lane: 'd', speed: 2.7},
-        { time: 65500, lane: 'j', speed: 2.7},
-        { time: 65700, lane: 'd', speed: 2.7},
-        { time: 65900, lane: 'f', speed: 2.7},
-        { time: 66100, lane: 'j', speed: 2.7},
-        { time: 66300, lane: 'k', speed: 2.7},
-        { time: 66500, lane: 'j', speed: 2.7},
-        { time: 66700, lane: 'j', speed: 2.7},
-        { time: 66900, lane: 'd', speed: 2.7},
-        { time: 67100, lane: 'j', speed: 2.7},
-        { time: 67300, lane: 'd', speed: 2.7},
-        { time: 67300, lane: 'k',  speed: 2.7},
-        { time: 67500, lane: 'f', speed: 2.7},
-        { time: 67700, lane: 'j', speed: 2.7},
-        { time: 67900, lane: 'd', speed: 2.7},
-        { time: 68100, lane: 'f', speed: 2.7},
-        { time: 68300, lane: 'k', speed: 2.7},
-        { time: 68500, lane: 'f', speed: 2.7},
-        { time: 68700, lane: 'j', speed: 2.7},
-        { time: 68900, lane: 'f', speed: 2.7},
-        { time: 68900, lane: 'j', speed: 2.7}
-
-    ]
-};
-
-
-// 게임 요소 초기화
-const gameAudio = document.getElementById('game-audio');
-const scoreDisplay = document.getElementById('score');
-const judgmentDisplay = document.getElementById('judgment');
-const comboDisplay = document.getElementById('combo');
-let score = 0;
-let combo = 0;
-let maxCombo = 0;
-let judgmentCounts = {
-    'Perfect': 0,
-    'Good': 0,
-    'Miss': 0
-};
-
-let activeNotes = new Map();
-let pressedKeys = new Set();
-
-// 키 매핑
-const keyMap = {
-    'd': 'lane-d',
-    'f': 'lane-f',
-    'j': 'lane-j',
-    'k': 'lane-k'
-};
-
-const lanes = {};
-Object.keys(keyMap).forEach(key => {
-    lanes[key] = document.getElementById(keyMap[key]);
-});
-// CSS 스타일 추가
-const style = document.createElement('style');
-style.textContent = `
-.judgment-effect {
-  position: absolute;
-  font-size: 3em;
-  font-weight: bold;
-  color: white;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  opacity: 1;
-  transition: opacity 0.3s ease-out;
-}
-
-.judgment-effect.perfect {
-  color: #ff85c2;
-}
-
-.judgment-effect.good {
-  color: #00ffaa;
-}
-
-.judgment-effect.miss {
-  color: #ff4444;
-}
-
-.judgment-effect.fade-out {
-  opacity: 0;
-}
-`;
-document.head.appendChild(style);
-document.head.appendChild(style);
-document.head.appendChild(style);
-// 판정 이펙트 생성 함수 추가
-function createJudgmentEffect(judgment) {
-    // 기존 판정 이펙트 제거
-    const existingEffects = document.querySelectorAll('.judgment-effect');
-    existingEffects.forEach(effect => effect.remove());
-
-    // 새 판정 이펙트 생성
-    const judgmentEffect = document.createElement('div');
-    judgmentEffect.classList.add('judgment-effect', judgment.toLowerCase());
-    judgmentEffect.textContent = judgment;
-
-    // 게임 컨테이너에 추가
-    const gameContainer = document.getElementById('game-container');
-    gameContainer.appendChild(judgmentEffect);
-
-    // 페이드 아웃 효과
-    setTimeout(() => {
-        judgmentEffect.classList.add('fade-out');
-    }, 300);
-
-    // 완전히 제거
-    setTimeout(() => {
-        judgmentEffect.remove();
-    }, 600);
-}
-// 노트 생성 함수
-function createNote(laneKey, noteData) {
-    const lane = lanes[laneKey];
-    if (!lane) return;
-
-    const note = document.createElement('div');
-    note.classList.add('note');
-
-    // 노트 타입에 따른 설정
-    if (noteData.type === 'long') {
-        note.classList.add('long-note');
-        note.style.height = `${noteData.duration / 10}px`;
-    } else if (noteData.type === 'multi') {
-        note.classList.add('multi-note');
-    }
-
-    note.style.top = '0px'; // 시작 위치
-    lane.appendChild(note);
-
-    // 노트 이동 애니메이션
-    let currentPosition = 0;
-    const maxDistance = 775;
-    const speed = noteData.speed || 1;
-
-    const fallInterval = setInterval(() => {
-        if (currentPosition >= maxDistance) {
-            clearInterval(fallInterval);
-            if (note.parentNode) {
-                note.parentNode.removeChild(note);
-                updateJudgment('Miss', lane);
-            }
-            return;
-        }
-        currentPosition += 5 * speed;
-        note.style.top = `${currentPosition}px`;
-    }, 20);
-
-    return note;
-}
-
-// 판정 함수
-function getJudgment(notePosition) {
-    const judgmentLinePosition = 735;
-    const diff = Math.abs(notePosition - judgmentLinePosition);
-
-    if (diff <= 40) return 'Perfect';
-    if (diff <= 80) return 'Good';
-    return 'Miss';
-}
-
-// 히트 이펙트 생성 함수
-function createHitEffect(lane, judgment) {
-    const judgmentLine = lane.querySelector('.judgment-line');
-    const rect = judgmentLine.getBoundingClientRect();
-    
-    const effect = document.createElement('div');
-    effect.className = `hit-effect ${judgment.toLowerCase()}`;
-    
-    effect.style.left = `${rect.left + rect.width / 2}px`;
-    effect.style.top = `${rect.top}px`;
-    
-    document.body.appendChild(effect);
-    
-    effect.addEventListener('animationend', () => {
-        effect.remove();
-    });
-}
-
-// 판정 업데이트 함수
-function updateJudgment(judgment, lane) {
-    // 판정 텍스트 및 스타일 업데이트
-    judgmentDisplay.textContent = judgment;
-    judgmentDisplay.className = 'judgment-display ' + judgment.toLowerCase();
-    
-
-    // 판정 횟수 카운트
-    judgmentCounts[judgment]++;
-
-    // 히트 이펙트 생성
-    if (judgment === 'Perfect' || judgment === 'Good') {
-        createHitEffect(lane, judgment);
-    }
-
-    // 점수 및 콤보 계산
-    if (judgment === 'Perfect') {
-        score += 100 * (combo + 1);
-        combo++;
-    } else if (judgment === 'Good') {
-        score += 50 * (combo + 1);
-        combo++;
-    } else if (judgment === 'Miss') {
-        combo = 0;
-    }
-
-    // 최대 콤보 업데이트
-    maxCombo = Math.max(maxCombo, combo);
-
-    // 점수와 콤보 표시 업데이트
-    scoreDisplay.textContent = score;
-    comboDisplay.textContent = `${combo}`;
-
-    // 판정 텍스트 일시적 표시
-    setTimeout(() => {
-        judgmentDisplay.textContent = '';
-    }, 500);
-}
-
-// 키 입력 처리
-function handleKeyDown(e) {
-    const key = e.key.toLowerCase();
-    if (!keyMap[key] || pressedKeys.has(key)) return;
-
-    pressedKeys.add(key);
-    const lane = lanes[key];
-    if (!lane) return;
-    
-    changeLaneColor(lane, true);
-    
-    const notes = lane.getElementsByClassName('note');
-    if (notes.length === 0) return;
-
-    const firstNote = notes[0];
-    const notePosition = parseInt(firstNote.style.top || '0');
-    const judgment = getJudgment(notePosition);
-
-    if (judgment === 'Miss') return;
-
-    if (firstNote.classList.contains('long-note')) {
-        handleLongNote(firstNote, key, lane);
-    } else if (firstNote.classList.contains('multi-note')) {
-        handleMultiNote(firstNote, key, lane);
-    } else {
-        firstNote.remove();
-        updateJudgment(judgment, lane);
-    }
-}
-
-function handleKeyUp(e) {
-    const key = e.key.toLowerCase();
-    if (!keyMap[key]) return;
-
-    pressedKeys.delete(key);
-    const lane = lanes[key];
-    if (lane) {
-        changeLaneColor(lane, false);
-    }
-}
-
-// 레인 색상 변경
-function changeLaneColor(lane, isKeyDown) {
-    lane.style.backgroundColor = isKeyDown ? 'rgba(255, 102, 216, 0.3)' : '#000000d5';
-}
-
-// 결과창 생성 함수
-function showResultScreen() {
-    // 기존 노트와 히트 이펙트를 유지
-    const hitEffects = document.querySelectorAll('.hit-effect');
-    hitEffects.forEach(effect => {
-        effect.style.position = 'fixed';
-        document.body.appendChild(effect);
-    });
-
-    // 결과 화면 컨테이너 생성
-    const resultScreen = document.createElement('div');
-    resultScreen.id = 'result-screen';
-    resultScreen.classList.add('result-screen');
-
-    // 결과 데이터 계산
-    const totalNotes = judgmentCounts.Perfect + judgmentCounts.Good + judgmentCounts.Miss;
-    const accuracy = totalNotes > 0 
-        ? ((judgmentCounts.Perfect + judgmentCounts.Good * 0.5) / totalNotes * 100).toFixed(2) 
-        : 0;
-
-    // 결과 화면 HTML 구성
-    resultScreen.innerHTML = `
-        <div class="result-content">
-            <h1>Game Results</h1>
-            <div class="result-stats">
-                <div class="stat-item">
-                    <span class="stat-label">Total Score</span>
-                    <span class="stat-value">${score}</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Max Combo</span>
-                    <span class="stat-value">${maxCombo}</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Accuracy</span>
-                    <span class="stat-value">${accuracy}%</span>
-                </div>
-                <div class="result-breakdown">
-                    <div class="breakdown-item">
-                        <span class="breakdown-label">Perfect</span>
-                        <span class="breakdown-count">${judgmentCounts.Perfect}</span>
-                    </div>
-                    <div class="breakdown-item">
-                        <span class="breakdown-label">Good</span>
-                        <span class="breakdown-count">${judgmentCounts.Good}</span>
-                    </div>
-                    <div class="breakdown-item">
-                        <span class="breakdown-label">Miss</span>
-                        <span class="breakdown-count">${judgmentCounts.Miss}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="result-actions">
-                <button id="restart-btn" class="btn">Restart</button>
-                <button id="select-difficulty-btn" class="btn">Select Music</button>
-            </div>
-        </div>
-    `;
-
-    // 결과 화면 스타일
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
         .result-screen {
             position: fixed;
             top: 0;
@@ -1197,128 +329,459 @@ function showResultScreen() {
         .btn:hover {
             background-color: #ff99e6;
         }
-    `;
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Rhythm Rush Logo">
+    </header>
 
-    // 문서에 결과 화면 추가
-    document.body.appendChild(styleElement);
-    document.body.appendChild(resultScreen);
+    <div class="judgment-display" id="judgment"></div>
+    <div class="combo-display" id="combo">0</div>
+    <audio id="game-audio" src="pink1.mp3" preload="auto"></audio>
+    
+    <div id="game-container">
+        <div class="lane" id="lane-d">
+            <div class="key-label">D</div>
+            <div class="judgment-line"></div>
+        </div>
+        <div class="lane" id="lane-f">
+            <div class="key-label">F</div>
+            <div class="judgment-line"></div>
+        </div>
+        <div class="lane" id="lane-j">
+            <div class="key-label">J</div>
+            <div class="judgment-line"></div>
+        </div>
+        <div class="lane" id="lane-k">
+            <div class="key-label">K</div>
+            <div class="judgment-line"></div>
+        </div>
+        <div id="score">0</div>
+    </div>
 
-    // 버튼 이벤트 리스너 추가
-    document.getElementById('restart-btn').addEventListener('click', restartGame);
-    document.getElementById('select-difficulty-btn').addEventListener('click', returnToDifficultySelect);
-}
+    <footer id="contact">
+        <p>© 2025 디콘디 임예지</p>
+    </footer>
 
-// 게임 재시작 함수
-function restartGame() {
-    // 결과 화면 제거
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.remove();
+    <script>
+        // 난이도별 패턴 정의 - Normal 난이도로 기본 설정
+        const patterns = {
+            normal: [
+                { time: 800, lane: 'd', speed: 1.5 },
+                { time: 3500, lane: 'd', speed: 1.5 },
+                { time: 4000, lane: 'f', speed: 1.5 },
+                { time: 4500, lane: 'j', speed: 1.5 },
+                { time: 5000, lane: 'f', speed: 1.5 },
+                { time: 6500, lane: 'd', speed: 1.5 },
+                { time: 7500, lane: 'd', speed: 1.5 },
+                { time: 10500, lane: 'f', speed: 1.5 },
+                { time: 12500, lane: 'f', speed: 1.5 },
+                { time: 15500, lane: 'd', speed: 1.5 },
+                { time: 17500, lane: 'd', speed: 1.5 },
+                { time: 19500, lane: 'k', speed: 1.5 },
+                { time: 20500, lane: 'k', speed: 1.5 },
+                { time: 21000, lane: 'k', speed: 1.5 },
+                { time: 21500, lane: 'j', speed: 1.5 },
+                { time: 22000, lane: 'd', speed: 1.5 },
+                { time: 22900, lane: 'd', speed: 1.5 },
+                { time: 24200, lane: 'd', speed: 1.5 },
+                { time: 24300, lane: 'f', speed: 1.5 },
+                { time: 24600, lane: 'j', speed: 1.5 },
+                { time: 25000, lane: 'k', speed: 1.5 },
+                { time: 25500, lane: 'd', speed: 1.5 },
+                { time: 26000, lane: 'f', speed: 1.5 },
+                { time: 26500, lane: 'j', speed: 1.5 },
+                { time: 27000, lane: 'k', speed: 1.5 },
+                { time: 28000, lane: 'd', speed: 1.5 },
+                { time: 28500, lane: 'f', speed: 1.5 },
+                { time: 29000, lane: 'j', speed: 1.5 },
+                { time: 30000, lane: 'k', speed: 1.5 },
+                { time: 31000, lane: 'd', speed: 1.5 },
+                { time: 34000, lane: 'f', speed: 1.5 },
+                { time: 34500, lane: 'f', speed: 1.5 },
+                { time: 35100, lane: 'f', speed: 1.5 },
+                { time: 39000, lane: 'f', speed: 1.5 },
+                { time: 41000, lane: 'f', speed: 1.5 },
+                { time: 41500, lane: 'f', speed: 1.5 },
+                { time: 43000, lane: 'd', speed: 1.5 },
+                { time: 44000, lane: 'd', speed: 1.5 },
+                { time: 48000, lane: 'd', speed: 1.5 },
+                { time: 48500, lane: 'f', speed: 1.5 },
+                { time: 49000, lane: 'j', speed: 1.5 },
+                { time: 49500, lane: 'k', speed: 1.5 },
+                { time: 50000, lane: 'k', speed: 1.5 },
+                { time: 50100, lane: 'j', speed: 1.5 },
+                { time: 52000, lane: 'd', speed: 1.5 },
+                { time: 52800, lane: 'k', speed: 1.5 },
+                { time: 54800, lane: 'k', speed: 1.5 },
+                { time: 55300, lane: 'k', speed: 1.5 },
+                { time: 56000, lane: 'd', speed: 1.5 },
+                { time: 56800, lane: 'f', speed: 1.5 },
+                { time: 57600, lane: 'd', speed: 1.5 },
+                { time: 58400, lane: 'f', speed: 1.5 },
+                { time: 59000, lane: 'f', speed: 1.5 },
+                { time: 60000, lane: 'j', speed: 1.5 },
+                { time: 61000, lane: 'k', speed: 1.5 },
+                { time: 63000, lane: 'j', speed: 1.5 },
+                { time: 65000, lane: 'k', speed: 1.5 },
+                { time: 67000, lane: 'd', speed: 1.5 },
+                { time: 68000, lane: 'f', speed: 1.5 },
+                { time: 69000, lane: 'd', speed: 1.5 },
+                { time: 70000, lane: 'f', speed: 1.5 },
+                { time: 72000, lane: 'd', speed: 1.5 },
+                { time: 72500, lane: 'f', speed: 1.5 },
+                { time: 75000, lane: 'j', speed: 1.5 },
+                { time: 75500, lane: 'k', speed: 1.5 },
+                { time: 76000, lane: 'd', speed: 1.5 },
+                { time: 77000, lane: 'f', speed: 1.5},
+                { time: 77800, lane: 'f', speed: 1.5 },
+                { time: 78500, lane: 'j', speed: 1.5 },
+                { time: 79000, lane: 'k', speed: 1.5 },
+                { time: 80000, lane: 'k', speed: 1.5 }
+            ]
+        };
 
-    // 게임 컨테이너와 난이도 선택 화면 토글
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('difficulty-select').style.display = 'flex';
+        // 게임 요소 초기화
+        const gameAudio = document.getElementById('game-audio');
+        const scoreDisplay = document.getElementById('score');
+        const judgmentDisplay = document.getElementById('judgment');
+        const comboDisplay = document.getElementById('combo');
+        let score = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        let judgmentCounts = {
+            'Perfect': 0,
+            'Good': 0,
+            'Miss': 0
+        };
 
-    // 상태 초기화
-    score = 0;
-    combo = 0;
-    maxCombo = 0;
-    judgmentCounts = {
-        'Perfect': 0,
-        'Good': 0,
-        'Miss': 0
-    };
-}
+        let activeNotes = new Map();
+        let pressedKeys = new Set();
 
-// 난이도 선택 화면으로 돌아가기
-function returnToDifficultySelect() {
-    // 결과 화면 제거
-    const resultScreen = document.getElementById('result-screen');
-    if (resultScreen) resultScreen.remove();
+        // 키 매핑
+        const keyMap = {
+            'd': 'lane-d',
+            'f': 'lane-f',
+            'j': 'lane-j',
+            'k': 'lane-k'
+        };
 
-    // 게임 컨테이너와 난이도 선택 화면 토글
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('difficulty-select').style.display = 'flex';
+        const lanes = {};
+        Object.keys(keyMap).forEach(key => {
+            lanes[key] = document.getElementById(keyMap[key]);
+        });
 
-    // 상태 초기화
-    score = 0;
-    combo = 0;
-    maxCombo = 0;
-    judgmentCounts = {
-        'Perfect': 0,
-        'Good': 0,
-        'Miss': 0
-    };
-}
+        // 판정 이펙트 생성 함수
+        function createJudgmentEffect(judgment) {
+            const existingEffects = document.querySelectorAll('.judgment-effect');
+            existingEffects.forEach(effect => effect.remove());
 
-// 오디오 종료 시 게임 종료를 처리하는 함수
-function setupGameEndHandler() {
-    gameAudio.addEventListener('ended', function() {
-        // 오디오 종료 시 게임 종료 및 결과 화면 표시
-        showResultScreen();
-    });
-}
+            const judgmentEffect = document.createElement('div');
+            judgmentEffect.classList.add('judgment-effect', judgment.toLowerCase());
+            judgmentEffect.textContent = judgment;
 
-// 게임 시작 함수
-function startGameWithDifficulty(difficulty) {
-    const currentPattern = patterns[difficulty];
-    document.getElementById('difficulty-select').style.display = 'none';
-    document.getElementById('game-container').style.display = 'flex';
-    comboDisplay.style.display = 'block';
+            const gameContainer = document.getElementById('game-container');
+            gameContainer.appendChild(judgmentEffect);
 
-    // 점수, 콤보, 판정 통계 초기화
-    score = 0;
-    combo = 0;
-    maxCombo = 0;
-    judgmentCounts = {
-        'Perfect': 0,
-        'Good': 0,
-        'Miss': 0
-    };
+            setTimeout(() => {
+                judgmentEffect.classList.add('fade-out');
+            }, 300);
 
-    // 점수와 콤보 표시 업데이트
-    scoreDisplay.textContent = '0';
-    comboDisplay.textContent = '0';
+            setTimeout(() => {
+                judgmentEffect.remove();
+            }, 600);
+        }
 
-    // 오디오 재생 준비
-    gameAudio.currentTime = 0;
-    gameAudio.play();
+        // 노트 생성 함수
+        function createNote(laneKey, noteData) {
+            const lane = lanes[laneKey];
+            if (!lane) return;
 
-    // 오디오 종료 핸들러 설정
-    setupGameEndHandler();
+            const note = document.createElement('div');
+            note.classList.add('note');
 
-    // 노트 생성
-    currentPattern.forEach(noteData => {
-        setTimeout(() => {
-            if (Array.isArray(noteData.lane)) {
-                noteData.lane.forEach(lane => {
-                    createNote(lane, { ...noteData, type: 'multi' });
-                });
-            } else {
-                createNote(noteData.lane, noteData);
+            if (noteData.type === 'long') {
+                note.classList.add('long-note');
+                note.style.height = `${noteData.duration / 10}px`;
+            } else if (noteData.type === 'multi') {
+                note.classList.add('multi-note');
             }
-        }, noteData.time);
-    });
-}
 
-// 이벤트 리스너 등록
-document.addEventListener('keydown', handleKeyDown);
-document.addEventListener('keyup', handleKeyUp);
+            note.style.top = '0px';
+            lane.appendChild(note);
 
-// 초기화
-window.onload = function() {
-    setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('difficulty-select').style.display = 'flex';
-    }, 2000);
-    setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        const difficultySelect = document.getElementById('difficulty-select');
-        
-        if (loadingScreen) loadingScreen.style.display = 'none';
-        if (difficultySelect) difficultySelect.style.display = 'flex';
-    }, 2000);
+            let currentPosition = 0;
+            const maxDistance = 775;
+            const speed = noteData.speed || 1;
 
-};
+            const fallInterval = setInterval(() => {
+                if (currentPosition >= maxDistance) {
+                    clearInterval(fallInterval);
+                    if (note.parentNode) {
+                        note.parentNode.removeChild(note);
+                        updateJudgment('Miss', lane);
+                    }
+                    return;
+                }
+                currentPosition += 5 * speed;
+                note.style.top = `${currentPosition}px`;
+            }, 20);
+
+            return note;
+        }
+
+        // 판정 함수
+        function getJudgment(notePosition) {
+            const judgmentLinePosition = 735;
+            const diff = Math.abs(notePosition - judgmentLinePosition);
+
+            if (diff <= 40) return 'Perfect';
+            if (diff <= 80) return 'Good';
+            return 'Miss';
+        }
+
+        // 히트 이펙트 생성 함수
+        function createHitEffect(lane, judgment) {
+            const judgmentLine = lane.querySelector('.judgment-line');
+            const rect = judgmentLine.getBoundingClientRect();
+            
+            const effect = document.createElement('div');
+            effect.className = `hit-effect ${judgment.toLowerCase()}`;
+            
+            effect.style.left = `${rect.left + rect.width / 2}px`;
+            effect.style.top = `${rect.top}px`;
+            
+            document.body.appendChild(effect);
+            
+            effect.addEventListener('animationend', () => {
+                effect.remove();
+            });
+        }
+
+        // 판정 업데이트 함수
+        function updateJudgment(judgment, lane) {
+            judgmentDisplay.textContent = judgment;
+            judgmentDisplay.className = 'judgment-display ' + judgment.toLowerCase();
+            
+            judgmentCounts[judgment]++;
+
+            if (judgment === 'Perfect' || judgment === 'Good') {
+                createHitEffect(lane, judgment);
+            }
+
+            if (judgment === 'Perfect') {
+                score += 100 * (combo + 1);
+                combo++;
+            } else if (judgment === 'Good') {
+                score += 50 * (combo + 1);
+                combo++;
+            } else if (judgment === 'Miss') {
+                combo = 0;
+            }
+
+            maxCombo = Math.max(maxCombo, combo);
+
+            scoreDisplay.textContent = score;
+            comboDisplay.textContent = `${combo}`;
+
+            setTimeout(() => {
+                judgmentDisplay.textContent = '';
+            }, 500);
+        }
+
+        // 키 입력 처리
+        function handleKeyDown(e) {
+            const key = e.key.toLowerCase();
+            if (!keyMap[key] || pressedKeys.has(key)) return;
+
+            pressedKeys.add(key);
+            const lane = lanes[key];
+            if (!lane) return;
+            
+            changeLaneColor(lane, true);
+            
+            const notes = lane.getElementsByClassName('note');
+            if (notes.length === 0) return;
+
+            const firstNote = notes[0];
+            const notePosition = parseInt(firstNote.style.top || '0');
+            const judgment = getJudgment(notePosition);
+
+            if (judgment === 'Miss') return;
+
+            firstNote.remove();
+            updateJudgment(judgment, lane);
+        }
+
+        function handleKeyUp(e) {
+            const key = e.key.toLowerCase();
+            if (!keyMap[key]) return;
+
+            pressedKeys.delete(key);
+            const lane = lanes[key];
+            if (lane) {
+                changeLaneColor(lane, false);
+            }
+        }
+
+        // 레인 색상 변경
+        function changeLaneColor(lane, isKeyDown) {
+            lane.style.backgroundColor = isKeyDown ? 'rgba(255, 102, 216, 0.3)' : '#000000d5';
+        }
+
+        // 결과창 생성 함수
+        function showResultScreen() {
+            const resultScreen = document.createElement('div');
+            resultScreen.id = 'result-screen';
+            resultScreen.classList.add('result-screen');
+
+            const totalNotes = judgmentCounts.Perfect + judgmentCounts.Good + judgmentCounts.Miss;
+            const accuracy = totalNotes > 0 
+                ? ((judgmentCounts.Perfect + judgmentCounts.Good * 0.5) / totalNotes * 100).toFixed(2) 
+                : 0;
+
+            resultScreen.innerHTML = `
+                <div class="result-content">
+                    <h1>Game Results</h1>
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Score</span>
+                            <span class="stat-value">${score}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Max Combo</span>
+                            <span class="stat-value">${maxCombo}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Accuracy</span>
+                            <span class="stat-value">${accuracy}%</span>
+                        </div>
+                        <div class="result-breakdown">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Perfect</span>
+                                <span class="breakdown-count">${judgmentCounts.Perfect}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Good</span>
+                                <span class="breakdown-count">${judgmentCounts.Good}</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Miss</span>
+                                <span class="breakdown-count">${judgmentCounts.Miss}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button id="restart-btn" class="btn">Restart</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(resultScreen);
+
+            document.getElementById('restart-btn').addEventListener('click', restartGame);
+        }
+
+        // 게임 재시작 함수
+        function restartGame() {
+            const resultScreen = document.getElementById('result-screen');
+            if (resultScreen) resultScreen.remove();
+
+            // 게임 컨테이너 숨기고 시작 화면 표시
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('start-screen').style.display = 'flex';
+            document.getElementById('header').style.display = 'none';
+            document.getElementById('combo').style.display = 'none';
+
+            // 상태 초기화
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            judgmentCounts = {
+                'Perfect': 0,
+                'Good': 0,
+                'Miss': 0
+            };
+
+            // 표시 업데이트
+            scoreDisplay.textContent = '0';
+            comboDisplay.textContent = '0';
+
+            // 기존 노트 제거
+            Object.values(lanes).forEach(lane => {
+                const notes = lane.getElementsByClassName('note');
+                while (notes.length > 0) {
+                    notes[0].remove();
+                }
+            });
+        }
+
+        // 오디오 종료 시 게임 종료를 처리하는 함수
+        function setupGameEndHandler() {
+            gameAudio.addEventListener('ended', function() {
+                showResultScreen();
+            });
+        }
+
+        // 게임 시작 함수
+        function startGame() {
+            // 시작 화면 숨기고 게임 화면 표시
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'flex';
+            document.getElementById('header').style.display = 'block';
+            document.getElementById('combo').style.display = 'block';
+
+            const currentPattern = patterns.normal; // Normal 난이도로 고정
+
+            // 점수, 콤보, 판정 통계 초기화
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            judgmentCounts = {
+                'Perfect': 0,
+                'Good': 0,
+                'Miss': 0
+            };
+
+            // 점수와 콤보 표시 업데이트
+            scoreDisplay.textContent = '0';
+            comboDisplay.textContent = '0';
+
+            // 오디오 재생 준비
+            gameAudio.currentTime = 0;
+            gameAudio.play();
+
+            // 오디오 종료 핸들러 설정
+            setupGameEndHandler();
+
+            // 노트 생성
+            currentPattern.forEach(noteData => {
+                setTimeout(() => {
+                    if (Array.isArray(noteData.lane)) {
+                        noteData.lane.forEach(lane => {
+                            createNote(lane, { ...noteData, type: 'multi' });
+                        });
+                    } else {
+                        createNote(noteData.lane, noteData);
+                    }
+                }, noteData.time);
+            });
+        }
+
+        // 이벤트 리스너 등록
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+
+        // 시작 버튼 클릭 이벤트
+        document.getElementById('start-button').addEventListener('click', function() {
+            startGame();
+        });
+
+        // 페이지 로드 시 시작 화면 표시
+        window.onload = function() {
+            // 시작 화면이 기본으로 표시됨
+        };
     </script>
 </body>
 </html>
