@@ -245,7 +245,6 @@
             height: 180px;
             position: relative;
             overflow: hidden;
-
         }
 
         .character-portrait img {
@@ -265,31 +264,15 @@
             left: 0;
             right: 0;
             height: 60%;
-
         }
 
-
-
-        .character-image {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin-right: 20px;
-            border: 4px solid;
-            flex-shrink: 0;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .character-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+        .character-header {
+            padding: 25px;
+            background: #fff;
+            color: #333;
         }
 
         .character-info {
-            flex: 1;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -433,37 +416,31 @@
         }
 
         /* 캐릭터 테마 색상 */
-        .green-theme .character-image { border-color: #69f0ae; }
         .green-theme .character-progress-fill { background: linear-gradient(to right, #69f0ae, #00c853); }
         .green-theme .play-btn { border-color: #69f0ae; color: #00c853; }
         .green-theme .affinity-indicator { border-left-color: #69f0ae; }
         .green-theme .play-btn:hover:not(:disabled) { background: #69f0ae; color: white; }
 
-        .yellow-theme .character-image { border-color: #ffeb3b; }
         .yellow-theme .character-progress-fill { background: linear-gradient(to right, #ffeb3b, #ffc107); }
         .yellow-theme .play-btn { border-color: #ffeb3b; color: #f57f17; }
         .yellow-theme .affinity-indicator { border-left-color: #ffeb3b; }
         .yellow-theme .play-btn:hover:not(:disabled) { background: #ffeb3b; color: white; }
 
-        .pink-theme .character-image { border-color: #ff80ab; }
         .pink-theme .character-progress-fill { background: linear-gradient(to right, #ff80ab, #ec407a); }
         .pink-theme .play-btn { border-color: #ff80ab; color: #c2185b; }
         .pink-theme .affinity-indicator { border-left-color: #ff80ab; }
         .pink-theme .play-btn:hover:not(:disabled) { background: #ff80ab; color: white; }
 
-        .blue-theme .character-image { border-color: #40c4ff; }
         .blue-theme .character-progress-fill { background: linear-gradient(to right, #40c4ff, #0091ea); }
         .blue-theme .play-btn { border-color: #40c4ff; color: #0277bd; }
         .blue-theme .affinity-indicator { border-left-color: #40c4ff; }
         .blue-theme .play-btn:hover:not(:disabled) { background: #40c4ff; color: white; }
 
-        .purple-theme .character-image { border-color: #9c27b0; }
         .purple-theme .character-progress-fill { background: linear-gradient(to right, #9c27b0, #7b1fa2); }
         .purple-theme .play-btn { border-color: #9c27b0; color: #6a1b9a; }
         .purple-theme .affinity-indicator { border-left-color: #9c27b0; }
         .purple-theme .play-btn:hover:not(:disabled) { background: #9c27b0; color: white; }
 
-        .red-theme .character-image { border-color: #f44336; }
         .red-theme .character-progress-fill { background: linear-gradient(to right, #f44336, #d32f2f); }
         .red-theme .play-btn { border-color: #f44336; color: #c62828; }
         .red-theme .affinity-indicator { border-left-color: #f44336; }
@@ -721,11 +698,6 @@
                 padding: 20px;
             }
             
-            .character-image {
-                width: 60px;
-                height: 60px;
-            }
-            
             .character-name {
                 font-size: 1.4rem;
             }
@@ -737,7 +709,6 @@
         <!-- 헤더 -->
         <div class="header">
             <img src="logo.png" alt="Colorhythm" class="logo">
-
         </div>
 
         <!-- 일일 상호작용 상태 -->
@@ -808,12 +779,11 @@
                 id: 'black',
                 name: 'Kael',
                 genre: 'Rock',
-                profileImage: 'https://via.placeholder.com/70x70/69f0ae/ffffff?text=N',
                 galleryImage: 'black_head.png',
                 portraitImage: 'black_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/green_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/black_talk.html',
                 unlockAffinity: 0,
                 color: '#646464',
                 personality: '고독 '
@@ -822,12 +792,11 @@
                 id: 'blue',
                 name: 'Airi',
                 genre: 'Future bass',
-                profileImage: 'https://via.placeholder.com/70x70/ffeb3b/333333?text=L',
                 galleryImage: 'blue_head.png',
                 portraitImage: 'blue_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/yellow_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/blue_talk.html',
                 unlockAffinity: 0,
                 color: '#6199ff',
                 personality: '명랑 / 에너지 / 쿨'
@@ -836,12 +805,11 @@
                 id: 'green',
                 name: 'Naru',
                 genre: 'Folk & Acoustic',
-                profileImage: 'https://via.placeholder.com/70x70/ff80ab/ffffff?text=M',
                 galleryImage: 'green_head.png',
                 portraitImage: 'green_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/green_talk.html',
                 unlockAffinity: 0,
                 color: '#8cffa0',
                 personality: '포근 / 자연 / 차분'
@@ -850,12 +818,11 @@
                 id: 'purple',
                 name: 'Sera',
                 genre: 'Synthwave',
-                profileImage: 'https://via.placeholder.com/70x70/40c4ff/ffffff?text=A',
                 galleryImage: 'purple_head.png',
                 portraitImage: 'purple_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/blue_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/purple_talk.html',
                 unlockAffinity: 0,
                 color: '#d58cff',
                 personality: '여유 / 솔직 / 깔끔'
@@ -864,7 +831,6 @@
                 id: 'yellow',
                 name: 'Lumi',
                 genre: 'Pop & Funk',
-
                 galleryImage: 'yellow_head.png',
                 portraitImage: 'yellow_pf.png',
                 affinity: 0,
@@ -878,12 +844,11 @@
                 id: 'pink',
                 name: 'Mero',
                 genre: 'bubblegum Pop',
-
                 galleryImage: 'pink_head.png',
                 portraitImage: 'pink_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/black_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
                 unlockAffinity: 0,
                 color: '#ff8cd8',
                 personality: '달콤 / 귀여움'
@@ -1052,10 +1017,6 @@
                         <div class="portrait-overlay"></div>
                     </div>
                     <div class="character-header">
-                        <div class="character-image">
-                            <img src="${char.profileImage}" alt="${char.name}" 
-                                 onerror="this.style.display='none'; this.parentElement.style.backgroundColor='${char.color}'; this.parentElement.style.color='white'; this.parentElement.style.fontSize='1.5rem'; this.parentElement.innerHTML='${char.name.charAt(0)}';">
-                        </div>
                         <div class="character-info">
                             <h3 class="character-name">${char.name}</h3>
                             <p class="character-genre">${char.genre}</p>
@@ -1107,10 +1068,10 @@
                     // 알림 표시
                     showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
                     
-                    // 실제 환경에서는 페이지 이동 (현재는 데모용으로 주석 처리)
-                    // setTimeout(() => {
-                    //     window.location.href = `${url}?character=${charId}`;
-                    // }, 1000);
+                    // 페이지 이동
+                    setTimeout(() => {
+                        window.location.href = `${url}?character=${charId}`;
+                    }, 1500);
                 });
             });
             
