@@ -6,6 +6,7 @@
     <title>Colorhythm - Character Affinity</title>
     <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Moirai+One&display=swap" rel="stylesheet">
     <style>
+        /* 기본 설정 */
         * {
             margin: 0;
             padding: 0;
@@ -26,10 +27,10 @@
               background-attachment: fixed
         }
 
-        /* 애니메이션 배경 효과 */
+        /* 배경 애니메이션 */
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -47,25 +48,53 @@
             50% { transform: translateY(-20px); }
         }
 
+        @keyframes glow {
+            from { text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.3); }
+            to { text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.5); }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* 메인 컨테이너 */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            
         }
 
-           /* 로고 크기 조정 */
-        img[src*="logo.png"] {
-            width: 50% !important;
-            height: auto !important;
-            max-width: 200px;
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        /* 로고 크기 조정 */
         .logo {
-            width: 50% !important;
-            height: auto !important;
-            max-width: 200px;
+            width: 200px;
+            height: auto;
+            max-width: 100%;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
         }
 
         .header h1 {
@@ -77,45 +106,46 @@
             animation: glow 2s ease-in-out infinite alternate;
         }
 
-        @keyframes glow {
-            from { text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.3); }
-            to { text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 255, 255, 0.5); }
-        }
-
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
-            margin-bottom: 30px;
         }
 
-        /* 일일 상호작용 상태 표시 */
+        /* 일일 상태 */
         .daily-status {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 30px;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 40px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .daily-status h3 {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
         }
 
         .interactions-count {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
 
         .count-item {
             background: rgba(255, 255, 255, 0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .count-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
 
         /* 캐릭터 갤러리 */
@@ -126,14 +156,15 @@
         .gallery-title {
             text-align: center;
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #fff;
+            font-weight: bold;
         }
 
         .image-gallery {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
             flex-wrap: wrap;
             margin-bottom: 30px;
         }
@@ -141,73 +172,91 @@
         .gallery-item {
             text-align: center;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .gallery-item:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-5px);
         }
 
         .star-container {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             margin-bottom: 10px;
         }
 
         .star-shape {
             width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
             border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.6);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: bold;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .star-shape img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .gallery-item:hover .star-shape {
             border-color: #fff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
         }
 
         .gallery-label {
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         /* 캐릭터 카드 그리드 */
         .characters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
             margin-bottom: 40px;
         }
 
         .character-card {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            border-radius: 25px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
         }
 
         .character-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
         }
 
         .character-portrait {
             width: 100%;
-            height: 200px;
-            background-size: cover;
-            background-position: center;
+            height: 180px;
             position: relative;
             overflow: hidden;
+
+        }
+
+        .character-portrait img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .character-card:hover .character-portrait img {
+            transform: scale(1.05);
         }
 
         .portrait-overlay {
@@ -215,12 +264,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50%;
-            background: linear-gradient(to top, rgba(255, 31, 244, 0.466), transparent);
+            height: 60%;
+
         }
 
         .character-header {
-            padding: 20px;
+            padding: 25px;
             display: flex;
             align-items: center;
             background: #fff;
@@ -228,63 +277,81 @@
         }
 
         .character-image {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            margin-right: 15px;
-            border: 3px solid;
+            margin-right: 20px;
+            border: 4px solid;
             flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .character-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .character-info {
             flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .character-name {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             color: #2c3e50;
         }
 
         .character-genre {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #7f8c8d;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .character-personality {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #95a5a6;
+            font-style: italic;
         }
 
         .character-stats {
-            padding: 20px;
+            padding: 25px;
             background: #fff;
             color: #333;
+            text-align: center;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .stat-label {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #7f8c8d;
+            font-weight: 500;
         }
 
         .stat-value {
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #2c3e50;
         }
 
-
+        .heart-container {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 1.2rem;
+        }
 
         .heart.filled {
             color: #e74c3c;
@@ -295,24 +362,18 @@
             color: #ddd;
         }
 
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
         .character-progress {
-            height: 10px;
+            height: 12px;
             background: #ecf0f1;
-            border-radius: 5px;
+            border-radius: 6px;
             overflow: hidden;
-            margin: 15px 0;
+            margin: 20px 0;
             position: relative;
         }
 
         .character-progress-fill {
             height: 100%;
-            border-radius: 5px;
+            border-radius: 6px;
             transition: width 1s ease-in-out;
             position: relative;
             overflow: hidden;
@@ -329,30 +390,26 @@
             animation: shimmer 2s infinite;
         }
 
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
         .affinity-indicator {
             text-align: center;
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 20px;
+            padding: 15px;
             background: #f8f9fa;
-            border-radius: 10px;
+            border-radius: 12px;
             border-left: 4px solid;
         }
 
         .affinity-level {
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            color: #2c3e50;
         }
 
         .character-actions {
-            padding: 20px;
+            padding: 25px;
             background: #fff;
             display: flex;
-            gap: 10px;
+            gap: 15px;
         }
 
         .play-btn {
@@ -360,18 +417,19 @@
             background: none;
             border: 2px solid;
             color: #333;
-            padding: 12px 20px;
-            border-radius: 25px;
+            padding: 15px 25px;
+            border-radius: 30px;
             font-family: 'Do Hyeon', sans-serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: bold;
+            text-align: center;
         }
 
         .play-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .play-btn:disabled {
@@ -380,7 +438,7 @@
             transform: none;
         }
 
-        /* 캐릭터별 테마 색상 */
+        /* 캐릭터 테마 색상 */
         .green-theme .character-image { border-color: #69f0ae; }
         .green-theme .character-progress-fill { background: linear-gradient(to right, #69f0ae, #00c853); }
         .green-theme .play-btn { border-color: #69f0ae; color: #00c853; }
@@ -417,7 +475,7 @@
         .red-theme .affinity-indicator { border-left-color: #f44336; }
         .red-theme .play-btn:hover:not(:disabled) { background: #f44336; color: white; }
 
-        /* 모달 스타일 */
+        /* 모달 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -432,6 +490,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
         .modal-overlay.show {
@@ -441,12 +500,12 @@
 
         .modal {
             background: linear-gradient(135deg, #ff82e0, #ff82e0);
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 25px;
+            padding: 40px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgb(255, 255, 255);
-            max-width: 400px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+            border: 3px solid rgb(255, 255, 255);
+            max-width: 450px;
             width: 90%;
             transform: scale(0.7);
             transition: transform 0.3s ease;
@@ -457,22 +516,22 @@
         }
 
         .modal-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: white;
         }
 
         .modal-message {
-            font-size: 1.1rem;
-            margin-bottom: 25px;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
             color: white;
             opacity: 0.9;
         }
 
         .modal-buttons {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
         }
 
@@ -480,13 +539,13 @@
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 15px 30px;
+            border-radius: 30px;
             font-family: 'Do Hyeon', sans-serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 80px;
+            min-width: 100px;
         }
 
         .modal-btn:hover {
@@ -518,42 +577,36 @@
         /* 알림 팝업 */
         .achievement-popup {
             position: fixed;
-            bottom: -100px;
+            bottom: -120px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9);
             border: 2px solid #ffa4f0;
-            border-radius: 15px;
-            padding: 20px 30px;
+            border-radius: 20px;
+            padding: 25px 35px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             z-index: 1000;
             transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
         }
 
         .achievement-popup.show {
-            bottom: 30px;
+            bottom: 40px;
         }
 
         .achievement-icon {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: linear-gradient(45deg, #ff63e5, #a0baff);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             animation: bounce 0.6s ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
         }
 
         .achievement-text {
@@ -562,16 +615,16 @@
         }
 
         .achievement-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             margin: 0;
             color: white;
         }
 
         .achievement-desc {
-            font-size: 0.9rem;
+            font-size: 1rem;
             opacity: 0.8;
-            margin: 5px 0 0 0;
+            margin: 8px 0 0 0;
             color: white;
         }
 
@@ -579,7 +632,7 @@
         .navigation {
             display: flex;
             justify-content: center;
-            margin-top: 40px;
+            margin-top: 50px;
         }
 
         .nav-btn {
@@ -587,89 +640,109 @@
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.3);
             color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
+            padding: 18px 35px;
+            border-radius: 35px;
             font-family: 'Do Hyeon', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .nav-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
-        /* 펄스 애니메이션 */
         .pulse {
             animation: pulse 0.6s ease-in-out 3;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
 
         /* 반응형 디자인 */
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2.5rem;
+                font-size: 2.8rem;
             }
             
             .characters-grid {
                 grid-template-columns: 1fr;
+                gap: 25px;
             }
             
             .image-gallery {
-                gap: 15px;
+                gap: 20px;
             }
             
             .star-container {
-                width: 60px;
-                height: 60px;
+                width: 70px;
+                height: 70px;
             }
             
             .modal {
-                padding: 20px;
+                padding: 30px;
             }
             
             .modal-buttons {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
+            }
+            
+            .character-header {
+                padding: 20px;
+            }
+            
+            .character-stats {
+                padding: 20px;
+            }
+            
+            .character-actions {
+                padding: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .header h1 {
-                font-size: 2rem;
+            .container {
+                padding: 15px;
             }
             
-            .character-card {
-                margin: 0 10px;
+            .header h1 {
+                font-size: 2.2rem;
             }
             
             .character-portrait {
-                height: 150px;
+                height: 160px;
             }
             
             .interactions-count {
-                flex-direction: column;
-                gap: 10px;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .daily-status {
+                padding: 20px;
+            }
+            
+            .character-image {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .character-name {
+                font-size: 1.4rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- 헤더 -->
         <div class="header">
-            <img src="logo.png" alt="Colorhythm" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <img src="logo.png" alt="Colorhythm" class="logo">
 
         </div>
 
@@ -694,6 +767,7 @@
 
         <!-- 캐릭터 갤러리 -->
         <div class="character-gallery">
+            <div class="gallery-title">캐릭터 선택</div>
             <div class="image-gallery" id="characterGallery">
                 <!-- 갤러리 아이템들이 여기에 생성됩니다 -->
             </div>
@@ -707,7 +781,7 @@
         <!-- 네비게이션 -->
         <div class="navigation">
             <a href="#" class="nav-btn" onclick="resetDailyInteractions()">
-                🔄 일일 제한 리셋 (테스트용)
+                🔄 일일 제한 리셋
             </a>
         </div>
     </div>
@@ -734,94 +808,100 @@
     </div>
 
     <script>
-        // 캐릭터 데이터
+        // 캐릭터 데이터 (각각 다른 이미지 경로)
         const characters = [
+            {
+                id: 'black',
+                name: 'Kael',
+                genre: 'Rock',
+                profileImage: 'https://via.placeholder.com/70x70/69f0ae/ffffff?text=N',
+                galleryImage: 'black_head.png',
+                portraitImage: 'black_pf.png',
+                affinity: 0,
+                maxAffinity: 10,
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/green_talk.html',
+                unlockAffinity: 0,
+                color: '#646464',
+                personality: '고독 '
+            },
+            {
+                id: 'blue',
+                name: 'Airi',
+                genre: 'Future bass',
+                profileImage: 'https://via.placeholder.com/70x70/ffeb3b/333333?text=L',
+                galleryImage: 'blue_head.png',
+                portraitImage: 'blue_pf.png',
+                affinity: 0,
+                maxAffinity: 10,
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/yellow_talk.html',
+                unlockAffinity: 0,
+                color: '#6199ff',
+                personality: '명랑 / 에너지 / 쿨'
+            },
             {
                 id: 'green',
                 name: 'Naru',
                 genre: 'Folk & Acoustic',
-                image: 'green_half.png',
-                portrait: 'green_half.png',
+                profileImage: 'https://via.placeholder.com/70x70/ff80ab/ffffff?text=M',
+                galleryImage: 'green_head.png',
+                portraitImage: 'green_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/noxtalk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
                 unlockAffinity: 0,
-                color: '#69f0ae',
-                personality: '자연친화 / 차분 / 다정'
+                color: '#8cffa0',
+                personality: '포근 / 자연 / 차분'
+            },
+            {
+                id: 'purple',
+                name: 'Sera',
+                genre: 'Synthwave',
+                profileImage: 'https://via.placeholder.com/70x70/40c4ff/ffffff?text=A',
+                galleryImage: 'purple_head.png',
+                portraitImage: 'purple_pf.png',
+                affinity: 0,
+                maxAffinity: 10,
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/blue_talk.html',
+                unlockAffinity: 0,
+                color: '#d58cff',
+                personality: '여유 / 솔직 / 깔끔'
             },
             {
                 id: 'yellow',
                 name: 'Lumi',
                 genre: 'Pop & Funk',
-                image: 'images/yellow_half.png',
-                portrait: 'yellow_half.png',
+
+                galleryImage: 'yellow_head.png',
+                portraitImage: 'yellow_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/noxtalk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/yellow_talk.html',
                 unlockAffinity: 0,
-                color: '#ffeb3b',
-                personality: '명랑 / 에너지 / 상큼'
+                color: '#ffd78c',
+                personality: '장난기 / 밝음 / 에너지'
             },
             {
                 id: 'pink',
                 name: 'Mero',
-                genre: 'Bubblegum Pop',
-                image: 'images/characters/pink_pf.png',
-                portrait: 'pink_stand.png',
+                genre: 'bubblegum Pop',
+
+                galleryImage: 'pink_head.png',
+                portraitImage: 'pink_pf.png',
                 affinity: 0,
                 maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
+                baseUrl: 'https://yejiimda.github.io/Colorhythm/black_talk.html',
                 unlockAffinity: 0,
-                color: '#ff80ab',
-                personality: '달콤 / 사랑 / 포근'
-            },
-            {
-                id: 'blue',
-                name: 'Airi',
-                genre: 'Electronic & Ambient',
-                image: 'images/characters/blue.png',
-                portrait: 'blue_half.png',
-                affinity: 0,
-                maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/blue_talk.html',
-                unlockAffinity: 0,
-                color: '#40c4ff',
-                personality: '여유 / 솔직 / 깔끔'
-            },
-            {
-                id: 'purple',
-                name: 'Sera',
-                genre: 'Classical & Orchestral',
-                image: 'images/characters/pink_pf.png',
-                portrait: 'purple_half.png',
-                affinity: 0,
-                maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/purple_talk.html',
-                unlockAffinity: 0,
-                color: '#9c27b0',
-                personality: '우아 / 예민 / 도도'
-            },
-            {
-                id: 'black',
-                name: 'Kael',
-                genre: 'Rock & Metal',
-                image: 'images/characters/red.png',
-                portrait: 'red_half.png',
-                affinity: 0,
-                maxAffinity: 10,
-                baseUrl: 'https://yejiimda.github.io/Colorhythm/red_talk.html',
-                unlockAffinity: 0,
-                color: '#f44336',
-                personality: '시니컬 / 고독 / 불안정'
+                color: '#ff8cd8',
+                personality: '달콤 / 귀여움'
             }
         ];
 
-        // 데이터 관리
+        // 데이터 관리 변수
         let dailyInteractions = {};
         let totalConversations = 0;
         let currentPendingCharacter = null;
 
-        // 초기화
+        // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
             generateCharacterGallery();
@@ -831,14 +911,16 @@
             checkAndResetDailyLimit();
         });
 
-        // 로컬 스토리지에서 데이터 로드
+        // 데이터 로드 함수
         function loadUserData() {
             try {
+                // 일일 상호작용 데이터 로드
                 const savedInteractions = localStorage.getItem('colorhythm_dailyInteractions');
                 if (savedInteractions) {
                     dailyInteractions = JSON.parse(savedInteractions);
                 }
                 
+                // 캐릭터 호감도 데이터 로드
                 const savedCharacters = localStorage.getItem('colorhythm_charactersData');
                 if (savedCharacters) {
                     const saved = JSON.parse(savedCharacters);
@@ -850,21 +932,24 @@
                     });
                 }
 
+                // 총 대화 횟수 로드
                 const savedConversations = localStorage.getItem('colorhythm_totalConversations');
                 if (savedConversations) {
                     totalConversations = parseInt(savedConversations);
                 }
             } catch (error) {
                 console.log('데이터 로딩 실패:', error);
+                // 오류 시 기본값 유지
             }
             
+            // 오늘 날짜 초기화
             const today = getTodayString();
             if (!dailyInteractions[today]) {
                 dailyInteractions[today] = {};
             }
         }
 
-        // 데이터 저장
+        // 데이터 저장 함수
         function saveUserData() {
             try {
                 localStorage.setItem('colorhythm_dailyInteractions', JSON.stringify(dailyInteractions));
@@ -883,12 +968,13 @@
                    String(today.getDate()).padStart(2, '0');
         }
 
-        // 일일 제한 체크 및 리셋
+        // 일일 제한 확인 및 리셋
         function checkAndResetDailyLimit() {
             const today = getTodayString();
             const lastResetDate = localStorage.getItem('colorhythm_lastResetDate');
             
             if (lastResetDate !== today) {
+                // 새로운 날이면 일일 제한 리셋
                 dailyInteractions = {};
                 dailyInteractions[today] = {};
                 localStorage.setItem('colorhythm_lastResetDate', today);
@@ -898,13 +984,13 @@
             }
         }
 
-        // 오늘 상호작용 가능 여부 확인
+        // 오늘 상호작용 가능한지 확인
         function canInteractToday(characterId) {
             const today = getTodayString();
             return !dailyInteractions[today] || !dailyInteractions[today][characterId];
         }
 
-        // 오늘 상호작용 완료 표시
+        // 오늘 상호작용 완료 마킹
         function markInteractedToday(characterId) {
             const today = getTodayString();
             if (!dailyInteractions[today]) {
@@ -913,7 +999,7 @@
             dailyInteractions[today][characterId] = true;
         }
 
-        // 캐릭터 갤러리 생성 style="background-color: ${char.color};"
+        // 캐릭터 갤러리 생성
         function generateCharacterGallery() {
             const gallery = document.getElementById('characterGallery');
             gallery.innerHTML = '';
@@ -924,8 +1010,9 @@
                 
                 galleryItem.innerHTML = `
                     <div class="star-container ${char.id}-star">
-                        <div class="star-shape" > 
-                     
+                        <div class="star-shape" style="background-color: ${char.color};"> 
+                            <img src="${char.galleryImage}" alt="${char.name}" 
+                                 onerror="this.style.display='none'; this.parentElement.style.fontSize='1.8rem'; this.parentElement.style.color='white'; this.parentElement.textContent='${char.name.charAt(0)}';">
                         </div>
                     </div>
                     <div class="gallery-label">${char.name}</div>
@@ -933,11 +1020,15 @@
                 
                 gallery.appendChild(galleryItem);
                 
-                // 갤러리 아이템 클릭 이벤트
+                // 갤러리 아이템 클릭 이벤트 - 해당 캐릭터 카드로 스크롤
                 galleryItem.addEventListener('click', function() {
                     const characterCard = document.querySelector(`.character-card.${char.id}-theme`);
                     if (characterCard) {
-                        characterCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        characterCard.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        // 펄스 효과 추가
                         characterCard.classList.add('pulse');
                         setTimeout(() => {
                             characterCard.classList.remove('pulse');
@@ -961,13 +1052,16 @@
                 const buttonDisabled = !canInteract ? 'disabled' : '';
                 
                 card.innerHTML = `
-                    <div class="character-portrait" style="background-color: ${char.color}; background-image: linear-gradient(135deg, ${char.color}50, ${char.color});">
+                    <div class="character-portrait" style="background: linear-gradient(135deg, ${char.color}40, ${char.color}80);">
+                        <img src="${char.portraitImage}" alt="${char.name}" 
+                             onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, ${char.color}, ${char.color}cc)'; this.parentElement.innerHTML='<div style=\\'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:white;font-weight:bold;\\'>${char.name}</div>';">
                         <div class="portrait-overlay"></div>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
-                            
-                        </div>
                     </div>
-
+                    <div class="character-header">
+                        <div class="character-image">
+                            <img src="${char.profileImage}" alt="${char.name}" 
+                                 onerror="this.style.display='none'; this.parentElement.style.backgroundColor='${char.color}'; this.parentElement.style.color='white'; this.parentElement.style.fontSize='1.5rem'; this.parentElement.innerHTML='${char.name.charAt(0)}';">
+                        </div>
                         <div class="character-info">
                             <h3 class="character-name">${char.name}</h3>
                             <p class="character-genre">${char.genre}</p>
@@ -998,28 +1092,35 @@
                 grid.appendChild(card);
             });
             
-            // 버튼 이벤트 리스너 추가
+            // 카드 이벤트 리스너 설정
             setupCardEventListeners();
         }
 
         // 카드 이벤트 리스너 설정
         function setupCardEventListeners() {
-            // 대화하기 버튼
+            // 대화하기 버튼 이벤트
             document.querySelectorAll('.play-btn[data-url]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const charId = this.getAttribute('data-character');
                     const url = this.getAttribute('data-url');
+                    const character = getCharacterById(charId);
+                    
+                    // 대화 횟수 증가
                     totalConversations++;
                     saveUserData();
                     updateDailyStatus();
-                    showAchievement('대화 시작!', `${getCharacterById(charId).name}와의 대화를 시작합니다`);
                     
-                    // 실제 환경에서는 페이지 이동
-                    // window.location.href = `${url}?character=${charId}`;
+                    // 알림 표시
+                    showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
+                    
+                    // 실제 환경에서는 페이지 이동 (현재는 데모용으로 주석 처리)
+                    // setTimeout(() => {
+                    //     window.location.href = `${url}?character=${charId}`;
+                    // }, 1000);
                 });
             });
             
-            // 호감도 증가 버튼
+            // 호감도 증가 버튼 이벤트
             document.querySelectorAll('.play-btn[data-action="increase"]').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (this.disabled) return;
@@ -1038,7 +1139,7 @@
 
         // 이벤트 리스너 설정
         function setupEventListeners() {
-            // 모달 이벤트
+            // 모달 확인 버튼
             document.getElementById('confirmYes').addEventListener('click', function() {
                 if (currentPendingCharacter) {
                     confirmIncreaseAffinity(currentPendingCharacter);
@@ -1046,6 +1147,7 @@
                 hideModal();
             });
             
+            // 모달 취소 버튼
             document.getElementById('confirmNo').addEventListener('click', hideModal);
             
             // 모달 오버레이 클릭으로 닫기
@@ -1067,12 +1169,19 @@
 
         // 호감도 레벨 텍스트 반환
         function getAffinityLevel(affinity) {
-            if (affinity >= 9) return "우린 운명이야!";
-            if (affinity >= 7) return "넌 나한테 특별해!";
-            if (affinity >= 5) return "우린 이제 친구야!";
-            if (affinity >= 3) return "또 만났네?";
-            if (affinity >= 1) return "안녕!";
-            return "처음 만난 사이";
+            const levels = [
+                "처음 만난 사이",      // 0
+                "안녕!",              // 1
+                "또 만났네?",         // 2-3
+                "또 만났네?",
+                "우린 이제 친구야!",  // 4-5
+                "우린 이제 친구야!",
+                "넌 나한테 특별해!",  // 6-7
+                "넌 나한테 특별해!",
+                "우린 운명이야!",     // 8-9
+                "우린 운명이야!"      // 10
+            ];
+            return levels[Math.min(affinity, levels.length - 1)];
         }
 
         // ID로 캐릭터 찾기
@@ -1088,7 +1197,7 @@
             const remainingInteractions = characters.length - usedInteractions;
             
             const totalAffinity = characters.reduce((sum, char) => sum + char.affinity, 0);
-            const averageAffinity = (totalAffinity / characters.length).toFixed(1);
+            const averageAffinity = characters.length > 0 ? (totalAffinity / characters.length).toFixed(1) : '0.0';
             
             document.getElementById('remainingInteractions').textContent = `${remainingInteractions}/${characters.length}`;
             document.getElementById('totalConversations').textContent = totalConversations;
@@ -1110,7 +1219,7 @@
             document.getElementById('confirmModal').classList.remove('show');
         }
 
-        // 호감도 증가 확인
+        // 호감도 증가 확인 처리
         function confirmIncreaseAffinity(characterId) {
             const charIndex = characters.findIndex(c => c.id === characterId);
             if (charIndex === -1) return;
@@ -1118,27 +1227,30 @@
             const character = characters[charIndex];
             
             if (character.affinity < character.maxAffinity) {
+                // 호감도 증가
                 character.affinity++;
                 markInteractedToday(characterId);
                 saveUserData();
                 generateCharacterCards();
                 updateDailyStatus();
                 
+                // 성공 알림
                 showAchievement(
                     `💖 ${character.name} 호감도 상승!`, 
                     `${getAffinityLevel(character.affinity)}`
                 );
                 
-                // 최대 호감도 달성 시 특별 메시지
+                // 최대 호감도 달성 시 특별 알림
                 if (character.affinity === character.maxAffinity) {
                     setTimeout(() => {
                         showAchievement(
                             `🎉 ${character.name} 최대 호감도!`, 
                             '축하합니다! 최대 호감도에 도달했습니다!'
                         );
-                    }, 2000);
+                    }, 2500);
                 }
             } else {
+                // 이미 최대 호감도인 경우
                 showAchievement(`${character.name}`, `이미 최대 호감도에 도달했습니다!`);
             }
         }
@@ -1151,6 +1263,7 @@
             
             popup.classList.add('show');
             
+            // 3초 후 자동으로 숨김
             setTimeout(() => {
                 popup.classList.remove('show');
             }, 3000);
