@@ -74,9 +74,9 @@
             background-image: url('pink_box.png'); 
             padding: 20px;
             margin: 50px auto;
-            width: 150%;
-            max-width: 1600px;
-            height: 600px;
+            width: 100%;
+            max-width: 1000px;
+            height: 300px;
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -88,7 +88,8 @@
         #dialog-text {
             font-size: 30px;
             text-shadow: 2px 2px 4px #ffb6db;
-            padding-left: 24%;
+            padding-left: 5%;
+            padding-bottom: 6%;
             text-align: left;
         }
 
@@ -96,7 +97,7 @@
             position: absolute;
             top: 40px;
             right: 100px;
-            background: linear-gradient(to top, rgb(255, 216, 237), rgb(255, 86, 213)); /* 그라데이션 적용 */
+            background: linear-gradient(to top, rgb(255, 216, 237), rgb(255, 86, 213));
             border: 3px solid rgb(255, 255, 255);
             color: rgb(255, 255, 255);
             padding: 10px 20px;
@@ -131,26 +132,22 @@
 
     <script>
 const conversations = {
+    // 1단계 대화 - 초기 선택지
     1: {
         dialogs: [
             "응! 안녕?",
             "버블검팝은 청소년을 겨냥하여 만들어진 팝 음악이야.",
-            "우리 취향이 통할 것 같아. "
+            "우리 취향이 통할 것 같아."
         ],
         choices: [
             "너는 어떤 사람이야?",
             "가장 좋아하는 가수가 뭐야?",
             "나도 버블검 팝 좋아해!"
-        ],
-        nextConversation: {
-            1: 4,
-            2: 5,
-            3: 6
-        }
+        ]
     },
     2: {
         dialogs: [
-            "안녕? 난 Mero야.",
+            "안녕? 난 Mero야(♡ >ω< ♡)",
             "난 귀여운 것과 달콤한 것을 좋아해!",
             "우리 취향이 통할 것 같아."
         ],
@@ -158,16 +155,11 @@ const conversations = {
             "버블검 팝이 뭐야?",
             "음악으로 무얼 표현하고 싶어?",
             "귀여워!"
-        ],
-        nextConversation: {
-            1: 7,
-            2: 8,
-            3: 9
-        }
+        ]
     },
     3: {
         dialogs: [
-            "고마워!",
+            "난 Mero야! 귀여운 것과 달콤한 걸 정~말 좋아해~ (♡ >ω< ♡)",
             "너도 버블검 팝을 좋아하니?",
             "우리 취향이 통할 것 같아."
         ],
@@ -175,48 +167,161 @@ const conversations = {
             "네 음악 취향에 대해 더 알고 싶어",
             "패션에 대해 더 말해줘",
             "그래, 더 이야기하자!"
-        ],
-        nextConversation: {
-            1: 10,
-            2: 11,
-            3: 12
-        }
+        ]
     },
-    4: {
+    
+    // 2단계 대화 - 1단계 선택지 1-1, 1-2, 1-3에 대한 응답
+    "1-1": {
         dialogs: [
-            "올블랙 패션은 단순한 색깔이 아니야.",
-            "내면의 반항과 자유를 표현하는 거지.",
-            "우리 취향이 통할 것 같아."
+            "난 감정을 음악으로 표현하는 걸 좋아해.",
+            "특히 귀여운 멜로디와 달콤한 가사가 좋아!",
+            "음악은 마음을 전달하는 마법 같은 거야."
         ],
         choices: [
-            "반항이란 무엇을 의미해?",
-            "패션으로 무얼 표현하고 싶어?",
-            "멋지다!"
+            "어떤 감정을 제일 많이 표현해?",
+            "음악 만들 때 영감은 어디서 받아?",
+            "정말 멋진 생각이야!"
+        ]
+    },
+    "1-2": {
+        dialogs: [
+            "음... 사실 나는 여러 가수를 좋아해!",
+            "귀여운 목소리와 톡톡 튀는 음악 스타일이면 다 좋아.",
+            "너는 어떤 음악을 좋아해?"
         ],
-        nextConversation: {
-            1: 13,
-            2: 14,
-            3: 15
-        }
+        choices: [
+            "나도 귀여운 음악 좋아해!",
+            "락 음악도 들어봐?",
+            "댄스 음악은 어때?"
+        ]
+    },
+    "1-3": {
+        dialogs: [
+            "정말? 우리 취향이 비슷하네!",
+            "버블검 팝의 달콤함이 너무 좋지 않아?",
+            "같이 음악 이야기 더 하자!"
+        ],
+        choices: [
+            "어떤 버블검 팝 노래 추천해줄래?",
+            "버블검 팝 가수 되고 싶어?",
+            "음악 말고 다른 취미도 있어?"
+        ]
+    },
+    
+    // 2단계 대화 - 1단계 선택지 2-1, 2-2, 2-3에 대한 응답
+    "2-1": {
+        dialogs: [
+            "버블검 팝은 달콤하고 톡톡 튀는 음악이야!",
+            "마치 입 안에서 터지는 버블검처럼 상큼해.",
+            "한 번 들으면 계속 흥얼거리게 되는 중독성이 있어!"
+        ],
+        choices: [
+            "그 중독성이 뭐에서 나와?",
+            "다른 장르도 들어?",
+            "나도 그런 음악 만들어보고 싶어!"
+        ]
+    },
+    "2-2": {
+        dialogs: [
+            "음악으로 행복과 즐거움을 전달하고 싶어!",
+            "듣는 사람이 미소 짓게 만드는 게 내 목표야.",
+            "세상에 더 많은 달콤함을 퍼뜨리고 싶어."
+        ],
+        choices: [
+            "정말 따뜻한 마음이네!",
+            "슬픈 노래도 만들어?",
+            "음악으로 세상을 바꿀 수 있을까?"
+        ]
+    },
+    "2-3": {
+        dialogs: [
+            "고마워! (♡ >ω< ♡)",
+            "귀여운 것들은 세상을 더 밝게 만든다고 생각해.",
+            "너도 정말 귀여워!"
+        ],
+        choices: [
+            "어떤 귀여운 것들을 좋아해?",
+            "패션에도 관심 있어?",
+            "고마워, 너도 정말 귀여워!"
+        ]
+    },
+    
+    // 2단계 대화 - 1단계 선택지 3-1, 3-2, 3-3에 대한 응답
+    "3-1": {
+        dialogs: [
+            "난 특히 달콤한 멜로디를 좋아해!",
+            "그리고 사랑과 우정에 대한 노래들이 좋아.",
+            "음악은 감정을 가장 잘 표현하는 언어라고 생각해."
+        ],
+        choices: [
+            "사랑 노래 중에 제일 좋아하는 건?",
+            "우정 노래도 만들어봤어?",
+            "음악 외에 감정 표현하는 방법은?"
+        ]
+    },
+    "3-2": {
+        dialogs: [
+            "패션은 나의 또 다른 표현 방식이야!",
+            "핑크색과 파스텔 톤을 정말 좋아해.",
+            "귀여운 액세서리들도 빠질 수 없지!"
+        ],
+        choices: [
+            "어떤 액세서리를 제일 좋아해?",
+            "옷 입을 때 중요하게 생각하는 건?",
+            "내가 입어봐도 될까?"
+        ]
+    },
+    "3-3": {
+        dialogs: [
+            "좋아! 우리 정말 통하는 것 같아!",
+            "이렇게 대화하니까 너무 즐거워.",
+            "앞으로도 자주 이야기하자!"
+        ],
+        choices: [
+            "나도 정말 즐거워!",
+            "다음엔 뭘 이야기할까?",
+            "친구가 되자!"
+        ]
     }
 };
 
-let currentConversation = null;
-let dialogStep = 0;
+let currentStage = 1; // 현재 대화 단계 (1, 2, 3)
+let currentPath = ""; // 현재 대화 경로
+let dialogStep = 0; // 현재 대화 내 단계
 
 function makeChoice(choiceNumber) {
-    currentConversation = conversations[choiceNumber];
+    if (currentStage === 1) {
+        // 1단계: 초기 선택지
+        currentPath = choiceNumber.toString();
+        showDialog(currentPath);
+    } else if (currentStage === 2) {
+        // 2단계: 1단계 선택에 따른 분기
+        currentPath = currentPath + "-" + choiceNumber;
+        showDialog(currentPath);
+    } else if (currentStage === 3) {
+        // 3단계: 마지막 대화 후 게임으로 이동
+        fadeToRhythmGame();
+        return;
+    }
     
-    document.getElementById('dialog-text').textContent = currentConversation.dialogs[dialogStep];
-    
-    document.getElementById('choice1').textContent = currentConversation.choices[0];
-    document.getElementById('choice2').textContent = currentConversation.choices[1];
-    document.getElementById('choice3').textContent = currentConversation.choices[2];
-    
-    dialogStep++;
+    currentStage++;
+}
 
-    if (dialogStep >= currentConversation.dialogs.length) {
-        setTimeout(fadeToRhythmGame, 2000);
+function showDialog(conversationKey) {
+    const conversation = conversations[conversationKey];
+    dialogStep = 0;
+    
+    // 첫 번째 대화 표시
+    document.getElementById('dialog-text').textContent = conversation.dialogs[dialogStep];
+    
+    // 선택지 업데이트
+    document.getElementById('choice1').textContent = conversation.choices[0];
+    document.getElementById('choice2').textContent = conversation.choices[1];
+    document.getElementById('choice3').textContent = conversation.choices[2];
+    
+    // 3단계가 끝나면 잠시 후 게임으로 이동
+    if (currentStage > 3) {
+        setTimeout(fadeToRhythmGame, 3000);
     }
 }
 
