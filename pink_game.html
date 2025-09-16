@@ -660,7 +660,7 @@ body {
             speechText.classList.add('finished');
         }, 4000); // 1초 대기 + 3초 타이핑
 
-        // 게임 시작 함수
+        // 게임 시작 함수 (수정됨 - 각각 다른 URL로 이동)
         function startGame(mode) {
             const character = document.querySelector('.character');
             character.classList.add('excited');
@@ -678,10 +678,21 @@ body {
                 }, i * 30);
             }
             
-            // 애니메이션 후 게임 페이지로 이동
+            // 애니메이션 후 모드에 따른 다른 페이지로 이동
             setTimeout(() => {
                 character.classList.remove('excited');
-                window.location.href = 'https://yejiimda.github.io/Colorhythm/pink_hard.html';
+                
+                // Easy Mode (CD)와 Hard Mode (LP)에 따른 다른 URL 설정
+                let targetUrl;
+                if (mode === 'cd') {
+                    // Easy Mode - 쉬운 난이도 게임 페이지
+                    targetUrl = 'https://yejiimda.github.io/Colorhythm/pink_easy.html';
+                } else if (mode === 'lp') {
+                    // Hard Mode - 어려운 난이도 게임 페이지
+                    targetUrl = 'https://yejiimda.github.io/Colorhythm/pink_hard.html';
+                }
+                
+                window.location.href = targetUrl;
             }, 1000);
         }
 
