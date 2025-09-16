@@ -94,7 +94,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 400px;
             margin-bottom: 20px;
             position: relative;
         }
@@ -649,36 +649,7 @@
             color: white;
         }
 
-        /* 네비게이션 */
-        .navigation {
-            display: flex;
-            justify-content: center;
-            margin-top: 50px;
-        }
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 18px 35px;
-            border-radius: 35px;
-            font-family: 'Do Hyeon', sans-serif;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-        }
 
         .pulse {
             animation: pulse 0.6s ease-in-out 3;
@@ -789,7 +760,7 @@
             <div class="nav-container">
                 <!-- 홈 아이콘 (왼쪽) -->
                 <a href="https://yejiimda.github.io/Colorhythm/rhythm_start.html" class="nav-icon" title="홈으로 가기">
-                    🏠
+                    <img src="home.png" alt="홈" style="width: 60%; height: 60%; object-fit: contain;">
                 </a>
                 
                 <!-- 로고 (중앙) -->
@@ -797,9 +768,9 @@
                     <img src="logo.png" alt="Colorhythm" class="logo" onclick="goToHome()">
                 </div>
                 
-                <!-- 정보 아이콘 (오른쪽) -->
-                <a href="https://yejiimda.github.io/Colorhythm/rhythm_info.html" class="nav-icon" title="정보 페이지">
-                    📚
+                <!-- 갤러리 아이콘 (오른쪽) -->
+                <a href="https://yejiimda.github.io/Colorhythm/rhythm_info.html" class="nav-icon" title="갤러리 페이지">
+                    <img src="gallery.png" alt="갤러리" style="width: 60%; height: 60%; object-fit: contain;">
                 </a>
             </div>
         </div>
@@ -836,12 +807,7 @@
             <!-- 캐릭터 카드들이 여기에 생성됩니다 -->
         </div>
 
-        <!-- 네비게이션 -->
-        <div class="navigation">
-            <a href="#" class="nav-btn" onclick="resetDailyInteractions()">
-                🔄 일일 제한 리셋
-            </a>
-        </div>
+
     </div>
 
     <!-- 확인 모달 -->
@@ -884,7 +850,7 @@
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/black_talk.html',
                 unlockAffinity: 0,
                 color: '#646464',
-                personality: '고독 '
+                personality: '고독 / 예술 / 혼자가 좋아 '
             },
             {
                 id: 'blue',
@@ -910,7 +876,7 @@
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/green_talk.html',
                 unlockAffinity: 0,
                 color: '#8cffa0',
-                personality: '포근 / 자연 / 차분'
+                personality: '휴식 / 자연 / 차분'
             },
             {
                 id: 'purple',
@@ -949,7 +915,7 @@
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
                 unlockAffinity: 0,
                 color: '#ff8cd8',
-                personality: '달콤 / 귀여움'
+                personality: '달콤 / 귀여움 / 포근'
             }
         ];
 
@@ -1322,21 +1288,12 @@
             }, 3000);
         }
 
-        // 일일 제한 리셋 (테스트용)
-        function resetDailyInteractions() {
-            const today = getTodayString();
-            dailyInteractions[today] = {};
-            saveUserData();
-            generateCharacterCards();
-            updateDailyStatus();
-            showAchievement('리셋 완료!', '일일 호감도 제한이 리셋되었습니다');
-        }
+
 
         // 자동 일일 리셋 체크 (1분마다)
         setInterval(checkAndResetDailyLimit, 60000);
     </script>
 </body>
 </html>
-
 
 
