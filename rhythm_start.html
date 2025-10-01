@@ -792,6 +792,25 @@
     <div class="bg-overlay yellow-overlay" id="yellow-overlay"></div>
     <div class="bg-overlay pink-overlay" id="pink-overlay"></div>
     
+    <!-- 오디오 요소들 -->
+    <audio id="black-audio" preload="auto">
+        <source src="audio/rock.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="blue-audio" preload="auto">
+        <source src="audio/future-bass.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="green-audio" preload="auto">
+        <source src="audio/folk.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="purple-audio" preload="auto">
+        <source src="audio/synthwave.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="yellow-audio" preload="auto">
+        <source src="audio/pop-funk.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="pink-audio" preload="auto">
+        <source src="audio/bubblegum-pop.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="splash-container">
         <div class="speech-bubble-container">
@@ -930,9 +949,65 @@
         </div>
     </div>
 
-       <!-- 배경 버블 효과 -->
+    <!-- 자바스크립트 -->
     <script>
-        // 타이핑 애니메이션 완료 후 커서 제거 (더 빨라진 타이밍에 맞춤)
+        // 오디오 관리 객체
+        const audioManager = {
+            audios: {
+                black: document.getElementById('black-audio'),
+                blue: document.getElementById('blue-audio'),
+                green: document.getElementById('green-audio'),
+                purple: document.getElementById('purple-audio'),
+                yellow: document.getElementById('yellow-audio'),
+                pink: document.getElementById('pink-audio')
+            },
+            currentAudio: null,
+            
+            play(colorClass) {
+                // 이전 오디오 정지
+                this.stopAll();
+                
+                const audio = this.audios[colorClass];
+                if (audio) {
+                    audio.volume = 0.5; // 볼륨 설정 (0.0 ~ 1.0)
+                    audio.currentTime = 0; // 처음부터 재생
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    this.currentAudio = audio;
+                }
+            },
+            
+            stop(colorClass) {
+                const audio = this.audios[colorClass];
+                if (audio && audio === this.currentAudio) {
+                    this.fadeOut(audio);
+                }
+            },
+            
+            stopAll() {
+                Object.values(this.audios).forEach(audio => {
+                    if (!audio.paused) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+                this.currentAudio = null;
+            },
+            
+            fadeOut(audio) {
+                const fadeOutInterval = setInterval(() => {
+                    if (audio.volume > 0.05) {
+                        audio.volume = Math.max(0, audio.volume - 0.05);
+                    } else {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        audio.volume = 0.5; // 볼륨 초기화
+                        clearInterval(fadeOutInterval);
+                    }
+                }, 50);
+            }
+        };
+        
+        // 타이핑 애니메이션 완료 후 커서 제거
         setTimeout(() => {
             const title = document.querySelector('.splash-title');
             title.classList.add('typing-complete');
@@ -947,7 +1022,6 @@
                 sparkle.style.top = e.pageY + 'px';
                 document.body.appendChild(sparkle);
                 
-                // CSS 트랜지션을 사용한 애니메이션
                 gsapAnimate(sparkle);
                 
                 setTimeout(() => {
@@ -967,7 +1041,7 @@
             }, 300);
         }
 
-        // 컬러 옵션 호버 시 배경 오버레이 변경 (서서히 변화)
+        // 컬러 옵션 호버 시 배경 오버레이 변경 및 음악 재생
         const colorOptions = document.querySelectorAll('.color-option');
         const overlays = document.querySelectorAll('.bg-overlay');
         const bgFaces = document.querySelectorAll('.bg-character-face');
@@ -998,9 +1072,14 @@
                     bgFace.style.opacity = '0.3';
                     bgFace.style.transform = 'translate(-50%, -50%) scale(1.2)';
                 }
+                
+                // 음악 재생
+                audioManager.play(colorClass);
             });
             
             option.addEventListener('mouseleave', function() {
+                const colorClass = this.classList[1];
+                
                 // 마우스가 떠났을 때 모든 오버레이와 배경 얼굴 비활성화
                 overlays.forEach(overlay => {
                     overlay.classList.remove('active');
@@ -1009,12 +1088,14 @@
                     face.style.opacity = '0';
                     face.style.transform = 'translate(-50%, -50%) scale(0)';
                 });
+                
+                // 음악 페이드아웃
+                audioManager.stop(colorClass);
             });
         });
-
-
     </script>
 </body>
 </html>
+
 
 
