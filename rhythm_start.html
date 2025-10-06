@@ -467,55 +467,6 @@
             border-right-color: rgba(236, 64, 122, 0.9);
         }
         
-        /* 오디오 활성화 버튼 스타일 */
-        .audio-enable-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-        }
-        
-        .audio-enable-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .audio-enable-button {
-            font-family: 'Gugi', cursive;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        .audio-enable-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-        
         body.black-bg {
             background: linear-gradient(45deg, #333333, #000000);
             background-size: 400% 400%;
@@ -833,13 +784,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
-    <!-- 오디오 활성화 오버레이 -->
-    <div class="audio-enable-overlay" id="audioEnableOverlay">
-        <button class="audio-enable-button" id="audioEnableButton">
-            🔊 클릭하여 사운드 활성화
-        </button>
-    </div>
-    
     <!-- 배경 그라데이션 오버레이 추가 -->
     <div class="bg-overlay black-overlay" id="black-overlay"></div>
     <div class="bg-overlay blue-overlay" id="blue-overlay"></div>
@@ -1018,41 +962,8 @@
                 pink: document.getElementById('pink-audio')
             },
             currentAudio: null,
-            isEnabled: false,
-            
-            // 오디오 초기화 (Mac Safari 대응)
-            async initialize() {
-                // 모든 오디오를 로드하고 활성화
-                const loadPromises = Object.values(this.audios).map(audio => {
-                    return new Promise((resolve) => {
-                        audio.load();
-                        audio.volume = 0.5;
-                        // 무음으로 짧게 재생하여 오디오 컨텍스트 활성화
-                        audio.muted = true;
-                        audio.play().then(() => {
-                            audio.pause();
-                            audio.currentTime = 0;
-                            audio.muted = false;
-                            resolve();
-                        }).catch(() => {
-                            // 재생 실패 시에도 계속 진행
-                            audio.muted = false;
-                            resolve();
-                        });
-                    });
-                });
-                
-                await Promise.all(loadPromises);
-                this.isEnabled = true;
-                console.log('Audio initialized successfully');
-            },
             
             play(colorClass) {
-                if (!this.isEnabled) {
-                    console.log('Audio not enabled yet');
-                    return;
-                }
-                
                 // 이전 오디오 정지
                 this.stopAll();
                 
@@ -1060,18 +971,8 @@
                 if (audio) {
                     audio.volume = 0.5; // 볼륨 설정 (0.0 ~ 1.0)
                     audio.currentTime = 0; // 처음부터 재생
-                    const playPromise = audio.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                console.log('Playing:', colorClass);
-                                this.currentAudio = audio;
-                            })
-                            .catch(e => {
-                                console.log('Audio play failed:', e);
-                            });
-                    }
+                    audio.play().catch(e => console.log('Audio play failed:', e));
+                    this.currentAudio = audio;
                 }
             },
             
@@ -1105,20 +1006,6 @@
                 }, 50);
             }
         };
-        
-        // 오디오 활성화 버튼 이벤트
-        document.getElementById('audioEnableButton').addEventListener('click', async function() {
-            const overlay = document.getElementById('audioEnableOverlay');
-            overlay.classList.add('hidden');
-            
-            // 오디오 초기화
-            await audioManager.initialize();
-            
-            // 오버레이 완전히 제거
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 500);
-        });
         
         // 타이핑 애니메이션 완료 후 커서 제거
         setTimeout(() => {
@@ -1209,3 +1096,4 @@
     </script>
 </body>
 </html>
+
