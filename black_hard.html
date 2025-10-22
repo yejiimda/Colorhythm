@@ -803,15 +803,29 @@
             }, 500);
         }
 
-        // 키 입력 처리
+        // 개선된 키 입력 처리
         function handleKeyDown(e) {
             if (!gameActive) return;
             
-            const key = e.key.toLowerCase();
-            if (!keyMap[key] || pressedKeys.has(key)) return;
+            // 키 코드와 키 이름 둘 다 확인
+            const key = e.key ? e.key.toLowerCase() : String.fromCharCode(e.keyCode || e.which).toLowerCase();
+            const keyCode = e.keyCode || e.which;
+            
+            // 키 매핑 개선 (키코드도 함께 확인)
+            let mappedKey = null;
+            
+            if (key === 'd' || keyCode === 68) mappedKey = 'd';
+            else if (key === 'f' || keyCode === 70) mappedKey = 'f';
+            else if (key === 'j' || keyCode === 74) mappedKey = 'j';
+            else if (key === 'k' || keyCode === 75) mappedKey = 'k';
+            
+            if (!mappedKey || pressedKeys.has(mappedKey)) return;
 
-            pressedKeys.add(key);
-            const lane = lanes[key];
+            // 기본 키 이벤트 방지 (맥에서 특수 키 조합 방지)
+            e.preventDefault();
+            
+            pressedKeys.add(mappedKey);
+            const lane = lanes[mappedKey];
             if (!lane) return;
             
             changeLaneColor(lane, true);
@@ -832,11 +846,22 @@
         function handleKeyUp(e) {
             if (!gameActive) return;
             
-            const key = e.key.toLowerCase();
-            if (!keyMap[key]) return;
+            const key = e.key ? e.key.toLowerCase() : String.fromCharCode(e.keyCode || e.which).toLowerCase();
+            const keyCode = e.keyCode || e.which;
+            
+            let mappedKey = null;
+            
+            if (key === 'd' || keyCode === 68) mappedKey = 'd';
+            else if (key === 'f' || keyCode === 70) mappedKey = 'f';
+            else if (key === 'j' || keyCode === 74) mappedKey = 'j';
+            else if (key === 'k' || keyCode === 75) mappedKey = 'k';
+            
+            if (!mappedKey) return;
 
-            pressedKeys.delete(key);
-            const lane = lanes[key];
+            e.preventDefault();
+            
+            pressedKeys.delete(mappedKey);
+            const lane = lanes[mappedKey];
             if (lane) {
                 changeLaneColor(lane, false);
             }
@@ -850,7 +875,7 @@
         // 홈 화면으로 이동 함수
         function goToHome() {
             // 외부 URL로 이동
-            window.location.href = 'https://yejiimda.github.io/Colorhythm/black_game.html';
+            window.location.href = 'https://yejiimda.github.io/Colorhythm/yellow_game.html';
         }
 
         // 캐릭터 선택 화면으로 이동 함수
@@ -976,7 +1001,29 @@
             noteTimeouts = [];
         }
 
-        // 게임 시작 함수
+        // 오디오 초기화 함수 추가
+        function initializeAudio() {
+            try {
+                // Safari에서 오디오 컨텍스트 활성화
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => {
+                        console.log('Audio context resumed');
+                    });
+                }
+                
+                // 오디오 preload 설정
+                gameAudio.load();
+                gameAudio.volume = 0.8;
+                
+                console.log('Audio initialized successfully');
+            } catch (error) {
+                console.log('Audio initialization failed:', error);
+            }
+        }
+
+        // 게임 시작 함수 (Safari 호환 오디오 재생)
         function startGame() {
             gameActive = true;
             clearAllTimeouts();
@@ -987,7 +1034,7 @@
             document.getElementById('header').style.display = 'block';
             document.getElementById('combo').style.display = 'block';
 
-            const currentPattern = patterns.normal; // Normal 난이도로 고정
+            const currentPattern = patterns.normal;
 
             // 점수, 콤보, 판정 통계 초기화
             score = 0;
@@ -999,16 +1046,30 @@
                 'Miss': 0
             };
 
-            // 점수와 콤보 표시 업데이트
             scoreDisplay.textContent = '0';
             comboDisplay.textContent = '0';
 
-            // 오디오 재생 준비
+            // Safari 호환 오디오 재생
             gameAudio.currentTime = 0;
-            gameAudio.play();
-
-            // 오디오 종료 핸들러 설정
-            setupGameEndHandler();
+            
+            // Promise 기반 재생으로 에러 처리
+            const playPromise = gameAudio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        console.log('Audio started successfully');
+                        setupGameEndHandler();
+                    })
+                    .catch(error => {
+                        console.log('Audio play failed:', error);
+                        // 오디오 없이 게임 진행
+                        alert('오디오 재생에 실패했습니다. 음악 없이 게임을 진행합니다.');
+                        setupGameEndHandler();
+                    });
+            } else {
+                setupGameEndHandler();
+            }
 
             // 노트 생성
             currentPattern.forEach(noteData => {
@@ -1027,20 +1088,36 @@
             });
         }
 
+        // 키보드 테스트 함수 추가 (디버깅용)
+        function testKeyboard() {
+            document.addEventListener('keydown', function(e) {
+                console.log('Key pressed:', e.key, 'KeyCode:', e.keyCode);
+            });
+        }
+
         // 이벤트 리스너 등록
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
 
         // 시작 버튼 클릭 이벤트
         document.getElementById('start-button').addEventListener('click', function() {
+            console.log('Start button clicked');
+            
+            // 오디오 파일 존재 확인 (디버깅용)
+            console.log('Audio element:', gameAudio);
+            console.log('Audio src:', gameAudio.src);
+            
             startGame();
         });
 
-        // 페이지 로드 시 시작 화면 표시
+        // 페이지 로드 시 초기화
         window.onload = function() {
-            // 시작 화면이 기본으로 표시됨
+            console.log('Page loaded on:', navigator.platform);
+            console.log('User agent:', navigator.userAgent);
+            
+            initializeAudio();
+            testKeyboard();
         };
     </script>
 </body>
-
 </html>
