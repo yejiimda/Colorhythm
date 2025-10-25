@@ -161,113 +161,6 @@
             opacity: 0.9;
         }
 
-        /* 일일 상태 */
-        .daily-status {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 40px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .daily-status h3 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
-        .interactions-count {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .count-item {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 12px 20px;
-            border-radius: 15px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .count-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* 캐릭터 갤러리 */
-        .character-gallery {
-            margin-bottom: 40px;
-        }
-
-        .gallery-title {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .image-gallery {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-
-        .gallery-item {
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.1) translateY(-5px);
-        }
-
-        .star-container {
-            width: 90px;
-            height: 90px;
-            margin-bottom: 10px;
-        }
-
-        .star-shape {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.6);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .star-shape img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .gallery-item:hover .star-shape {
-            border-color: #fff;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
-        }
-
-        .gallery-label {
-            font-size: 1rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
         /* 캐릭터 카드 그리드 */
         .characters-grid {
             display: grid;
@@ -292,9 +185,10 @@
 
         .character-portrait {
             width: 100%;
-            height: 180px;
+            height: 360px;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .character-portrait img {
@@ -304,7 +198,7 @@
             transition: transform 0.3s ease;
         }
 
-        .character-card:hover .character-portrait img {
+        .character-portrait:hover img {
             transform: scale(1.05);
         }
 
@@ -649,8 +543,6 @@
             color: white;
         }
 
-
-
         .pulse {
             animation: pulse 0.6s ease-in-out 3;
         }
@@ -664,15 +556,6 @@
             .characters-grid {
                 grid-template-columns: 1fr;
                 gap: 25px;
-            }
-            
-            .image-gallery {
-                gap: 20px;
-            }
-            
-            .star-container {
-                width: 70px;
-                height: 70px;
             }
             
             .modal {
@@ -724,15 +607,6 @@
                 height: 160px;
             }
             
-            .interactions-count {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            
-            .daily-status {
-                padding: 20px;
-            }
-            
             .character-name {
                 font-size: 1.4rem;
             }
@@ -758,47 +632,10 @@
         <!-- 헤더 -->
         <div class="header">
             <div class="nav-container">
-                <!-- 홈 아이콘 (왼쪽) -->
-                <a href="https://yejiimda.github.io/Colorhythm/rhythm_start.html" class="nav-icon" title="홈으로 가기">
-                    <img src="home.png" alt="홈" style="width: 60%; height: 60%; object-fit: contain;">
-                </a>
-                
                 <!-- 로고 (중앙) -->
                 <div class="logo-container">
                     <img src="logo.png" alt="Colorhythm" class="logo" onclick="goToHome()">
                 </div>
-                
-                <!-- 갤러리 아이콘 (오른쪽) -->
-                <a href="https://yejiimda.github.io/Colorhythm/rhythm_info.html" class="nav-icon" title="갤러리 페이지">
-                    <img src="gallery.png" alt="갤러리" style="width: 60%; height: 60%; object-fit: contain;">
-                </a>
-            </div>
-        </div>
-
-        <!-- 일일 상호작용 상태 -->
-        <div class="daily-status">
-            <h3>호감도 현황</h3>
-            <div class="interactions-count">
-                <div class="count-item">
-                    <span>남은 호감도 증가: </span>
-                    <span id="remainingInteractions">3/3</span>
-                </div>
-                <div class="count-item">
-                    <span>총 대화 횟수: </span>
-                    <span id="totalConversations">0</span>
-                </div>
-                <div class="count-item">
-                    <span>평균 호감도: </span>
-                    <span id="averageAffinity">0.0</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 캐릭터 갤러리 -->
-        <div class="character-gallery">
-            <div class="gallery-title">캐릭터 선택</div>
-            <div class="image-gallery" id="characterGallery">
-                <!-- 갤러리 아이템들이 여기에 생성됩니다 -->
             </div>
         </div>
 
@@ -806,8 +643,6 @@
         <div class="characters-grid" id="charactersGrid">
             <!-- 캐릭터 카드들이 여기에 생성됩니다 -->
         </div>
-
-
     </div>
 
     <!-- 확인 모달 -->
@@ -844,7 +679,7 @@
                 name: 'Kael',
                 genre: 'Rock',
                 galleryImage: 'black_head.png',
-                portraitImage: 'black_pf.png',
+                portraitImage: 'black_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/black_talk.html',
@@ -857,7 +692,7 @@
                 name: 'Airi',
                 genre: 'Future bass',
                 galleryImage: 'blue_head.png',
-                portraitImage: 'blue_pf.png',
+                portraitImage: 'blue_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/blue_talk.html',
@@ -870,7 +705,7 @@
                 name: 'Naru',
                 genre: 'Folk & Acoustic',
                 galleryImage: 'green_head.png',
-                portraitImage: 'green_pf.png',
+                portraitImage: 'green_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/green_talk.html',
@@ -883,7 +718,7 @@
                 name: 'Sera',
                 genre: 'Synthwave',
                 galleryImage: 'purple_head.png',
-                portraitImage: 'purple_pf.png',
+                portraitImage: 'purple_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/purple_talk.html',
@@ -896,7 +731,7 @@
                 name: 'Lumi',
                 genre: 'Pop & Funk',
                 galleryImage: 'yellow_head.png',
-                portraitImage: 'yellow_pf.png',
+                portraitImage: 'yellow_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/yellow_talk.html',
@@ -909,7 +744,7 @@
                 name: 'Mero',
                 genre: 'bubblegum Pop',
                 galleryImage: 'pink_head.png',
-                portraitImage: 'pink_pf.png',
+                portraitImage: 'pink_head.png',
                 affinity: 0,
                 maxAffinity: 10,
                 baseUrl: 'https://yejiimda.github.io/Colorhythm/pink_talk.html',
@@ -927,9 +762,7 @@
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
-            generateCharacterGallery();
             generateCharacterCards();
-            updateDailyStatus();
             setupEventListeners();
             checkAndResetDailyLimit();
         });
@@ -1003,7 +836,6 @@
                 localStorage.setItem('colorhythm_lastResetDate', today);
                 saveUserData();
                 generateCharacterCards();
-                updateDailyStatus();
             }
         }
 
@@ -1022,45 +854,6 @@
             dailyInteractions[today][characterId] = true;
         }
 
-        // 캐릭터 갤러리 생성
-        function generateCharacterGallery() {
-            const gallery = document.getElementById('characterGallery');
-            gallery.innerHTML = '';
-            
-            characters.forEach(char => {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item';
-                
-                galleryItem.innerHTML = `
-                    <div class="star-container ${char.id}-star">
-                        <div class="star-shape" style="background-color: ${char.color};"> 
-                            <img src="${char.galleryImage}" alt="${char.name}" 
-                                 onerror="this.style.display='none'; this.parentElement.style.fontSize='1.8rem'; this.parentElement.style.color='white'; this.parentElement.textContent='${char.name.charAt(0)}';">
-                        </div>
-                    </div>
-                    <div class="gallery-label">${char.name}</div>
-                `;
-                
-                gallery.appendChild(galleryItem);
-                
-                // 갤러리 아이템 클릭 이벤트 - 해당 캐릭터 카드로 스크롤
-                galleryItem.addEventListener('click', function() {
-                    const characterCard = document.querySelector(`.character-card.${char.id}-theme`);
-                    if (characterCard) {
-                        characterCard.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center' 
-                        });
-                        // 펄스 효과 추가
-                        characterCard.classList.add('pulse');
-                        setTimeout(() => {
-                            characterCard.classList.remove('pulse');
-                        }, 1800);
-                    }
-                });
-            });
-        }
-
         // 캐릭터 카드들 생성
         function generateCharacterCards() {
             const grid = document.getElementById('charactersGrid');
@@ -1075,7 +868,7 @@
                 const buttonDisabled = !canInteract ? 'disabled' : '';
                 
                 card.innerHTML = `
-                    <div class="character-portrait" style="background: linear-gradient(135deg, ${char.color}40, ${char.color}80);">
+                    <div class="character-portrait" style="background: linear-gradient(135deg, ${char.color}40, ${char.color}80);" data-character="${char.id}" data-url="${char.baseUrl}">
                         <img src="${char.portraitImage}" alt="${char.name}" 
                              onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, ${char.color}, ${char.color}cc)'; this.parentElement.innerHTML='<div style=\\'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:white;font-weight:bold;\\'>${char.name}</div>';">
                         <div class="portrait-overlay"></div>
@@ -1117,6 +910,27 @@
 
         // 카드 이벤트 리스너 설정
         function setupCardEventListeners() {
+            // 캐릭터 portrait 클릭 이벤트
+            document.querySelectorAll('.character-portrait').forEach(portrait => {
+                portrait.addEventListener('click', function() {
+                    const charId = this.getAttribute('data-character');
+                    const url = this.getAttribute('data-url');
+                    const character = getCharacterById(charId);
+                    
+                    // 대화 횟수 증가
+                    totalConversations++;
+                    saveUserData();
+                    
+                    // 알림 표시
+                    showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
+                    
+                    // 페이지 이동
+                    setTimeout(() => {
+                        window.location.href = `${url}?character=${charId}`;
+                    }, 1500);
+                });
+            });
+
             // 대화하기 버튼 이벤트
             document.querySelectorAll('.play-btn[data-url]').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -1127,7 +941,6 @@
                     // 대화 횟수 증가
                     totalConversations++;
                     saveUserData();
-                    updateDailyStatus();
                     
                     // 알림 표시
                     showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
@@ -1208,21 +1021,6 @@
             return characters.find(c => c.id === id);
         }
 
-        // 일일 상태 업데이트
-        function updateDailyStatus() {
-            const today = getTodayString();
-            const todayInteractions = dailyInteractions[today] || {};
-            const usedInteractions = Object.keys(todayInteractions).length;
-            const remainingInteractions = characters.length - usedInteractions;
-            
-            const totalAffinity = characters.reduce((sum, char) => sum + char.affinity, 0);
-            const averageAffinity = characters.length > 0 ? (totalAffinity / characters.length).toFixed(1) : '0.0';
-            
-            document.getElementById('remainingInteractions').textContent = `${remainingInteractions}/${characters.length}`;
-            document.getElementById('totalConversations').textContent = totalConversations;
-            document.getElementById('averageAffinity').textContent = averageAffinity;
-        }
-
         // 모달 표시
         function showModal(characterId, characterName) {
             currentPendingCharacter = characterId;
@@ -1251,7 +1049,6 @@
                 markInteractedToday(characterId);
                 saveUserData();
                 generateCharacterCards();
-                updateDailyStatus();
                 
                 // 성공 알림
                 showAchievement(
@@ -1287,12 +1084,6 @@
                 popup.classList.remove('show');
             }, 3000);
         }
-
-
-
-        // 자동 일일 리셋 체크 (1분마다)
-        setInterval(checkAndResetDailyLimit, 60000);
     </script>
 </body>
 </html>
-
