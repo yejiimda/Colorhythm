@@ -634,7 +634,9 @@
             <div class="nav-container">
                 <!-- 로고 (중앙) -->
                 <div class="logo-container">
-                    <img src="logo.png" alt="Colorhythm" class="logo" onclick="goToHome()">
+                    <a href="https://yejiimda.github.io/Colorhythm/rhythm_start.html">
+                        <img src="logo.png" alt="Colorhythm" class="logo">
+                    </a>
                 </div>
             </div>
         </div>
@@ -861,12 +863,6 @@
             
             characters.forEach(char => {
                 const card = document.createElement('div');
-                card.className = `character-card ${char.id}-theme`;
-                
-                const canInteract = canInteractToday(char.id);
-                const buttonText = canInteract ? '호감도 +' : '오늘 완료 ✓';
-                const buttonDisabled = !canInteract ? 'disabled' : '';
-                
                 card.innerHTML = `
                     <div class="character-portrait" style="background: linear-gradient(135deg, ${char.color}40, ${char.color}80);" data-character="${char.id}" data-url="${char.baseUrl}">
                         <img src="${char.portraitImage}" alt="${char.name}" 
@@ -915,19 +911,13 @@
                 portrait.addEventListener('click', function() {
                     const charId = this.getAttribute('data-character');
                     const url = this.getAttribute('data-url');
-                    const character = getCharacterById(charId);
                     
                     // 대화 횟수 증가
                     totalConversations++;
                     saveUserData();
                     
-                    // 알림 표시
-                    showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
-                    
                     // 페이지 이동
-                    setTimeout(() => {
-                        window.location.href = `${url}?character=${charId}`;
-                    }, 1500);
+                    window.location.href = `${url}?character=${charId}`;
                 });
             });
 
@@ -936,19 +926,13 @@
                 btn.addEventListener('click', function() {
                     const charId = this.getAttribute('data-character');
                     const url = this.getAttribute('data-url');
-                    const character = getCharacterById(charId);
                     
                     // 대화 횟수 증가
                     totalConversations++;
                     saveUserData();
                     
-                    // 알림 표시
-                    showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
-                    
                     // 페이지 이동
-                    setTimeout(() => {
-                        window.location.href = `${url}?character=${charId}`;
-                    }, 1500);
+                    window.location.href = `${url}?character=${charId}`;
                 });
             });
             
