@@ -495,8 +495,8 @@
             bottom: -120px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #ffa4f0;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid rgb(255, 82, 189);
             border-radius: 20px;
             padding: 25px 35px;
             display: flex;
@@ -533,7 +533,7 @@
             font-size: 1.2rem;
             font-weight: bold;
             margin: 0;
-            color: white;
+            color: rgb(255, 82, 189);
         }
 
         .achievement-desc {
@@ -632,9 +632,11 @@
         <!-- 헤더 -->
         <div class="header">
             <div class="nav-container">
-                <!-- 로고 (중앙) -->
-                <div class="logo-container">
-                    <img src="logo.png" alt="Colorhythm" class="logo" onclick="goToHome()">
+                       <!-- 로고 (중앙) -->
+        <div class="logo-container">
+            <a href="https://yejiimda.github.io/Colorhythm/rhythm_start.html">
+                <img src="logo.png" alt="Colorhythm" class="logo">
+            </a>
                 </div>
             </div>
         </div>
@@ -922,7 +924,7 @@
                     saveUserData();
                     
                     // 알림 표시
-                    showAchievement('대화 시작!', `${character.name}와의 대화를 시작합니다`);
+                    showAchievement(`${character.name}의 정보를 알아보는중...`);
                     
                     // 페이지 이동
                     setTimeout(() => {
