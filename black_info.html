@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Carousel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      background-image: url(introbg.jpg);
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .carousel-container {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease;
+      height: 100%;
+    }
+
+    .carousel-item {
+      flex: 0 0 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .character-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: transform 0.6s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+    }
+
+    .character-section.scrolled {
+      transform: translateY(-100vh);
+    }
+
+    .carousel-item img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+      border-radius: 20px;
+    }
+
+    /* 음악 섹션 스타일 */
+    .music-section {
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(255, 123, 215, 0.1), rgba(138, 43, 226, 0.1));
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: absolute;
+      top: 100vh;
+      left: 0;
+      right: 0;
+      z-index: 1;
+      transition: transform 0.6s ease;
+    }
+
+    .music-section.visible {
+      transform: translateY(-100vh);
+    }
+
+    .music-title {
+      color: #fff;
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 3rem;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .music-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      max-width: 1200px;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    /* CD 스타일 카드 */
+    .music-card {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4e4e4e88, #2e0f27);
+      border: 3px solid #ff66d8;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      box-shadow: 
+        inset 0 0 30px rgba(255, 255, 255, 0.1),
+        0 10px 30px rgba(0, 0, 0, 0.3);
+      transform-style: preserve-3d;
+      overflow: hidden;
+    }
+
+    .music-card::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      background: #333;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+    }
+
+    .music-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: conic-gradient(
+        transparent 0deg,
+        rgba(255, 255, 255, 0.1) 45deg,
+        transparent 90deg,
+        rgba(255, 255, 255, 0.1) 135deg,
+        transparent 180deg,
+        rgba(255, 255, 255, 0.1) 225deg,
+        transparent 270deg,
+        rgba(255, 255, 255, 0.1) 315deg,
+        transparent 360deg
+      );
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    .music-card:hover {
+      transform: scale(1.2) rotateY(10deg);
+      box-shadow: 
+        inset 0 0 30px rgb(255, 123, 215),
+        0 20px 50px rgb(255, 123, 215);
+      border-color: #ffffff;
+    }
+
+    .music-card:hover::after {
+      animation: cdSpin 2s linear infinite;
+    }
+
+    @keyframes cdSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 1rem;
+    }
+
+    .music-card h3 {
+      color: #fff;
+      font-size: 1.0rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      font-weight: bold;
+    }
+
+    .music-card p {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .play-button {
+      background:  #ff66d8;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .play-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 123, 215, 0.5);
+    }
+
+    /* 스크롤 인디케이터 */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      text-align: center;
+      z-index: 10;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-indicator.hidden {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+      }
+      40% {
+        transform: translateX(-50%) translateY(-10px);
+      }
+      60% {
+        transform: translateX(-50%) translateY(-5px);
+      }
+    }
+
+    /* 화살표 네비게이션 */
+    .nav-arrows {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 30px;
+      pointer-events: none;
+    }
+
+    .nav-arrow {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      pointer-events: all;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      border: 3px solid rgba(255, 123, 215, 0.6);
+    }
+
+    .nav-arrow:hover {
+      background: #ff7bd7;
+      transform: scale(1.1);
+      box-shadow: 0 8px 30px rgba(255, 123, 215, 0.4);
+    }
+
+    .nav-arrow svg {
+      width: 24px;
+      height: 24px;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+
+    .nav-arrow:hover svg {
+      color: white;
+    }
+
+    .nav-arrow.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* 반응형 디자인을 위한 미디어 쿼리 */
+    @media (max-width: 768px) {
+      .music-grid {
+        gap: 2rem;
+      }
+      
+      .music-card {
+        width: 150px;
+        height: 150px;
+      }
+      
+      .music-card h3 {
+        font-size: 1rem;
+      }
+      
+      .music-card p {
+        font-size: 0.7rem;
+      }
+      
+      .music-title {
+        font-size: 2rem;
+      }
+      
+      .music-section {
+        padding: 1rem;
+      }
+
+      .nav-arrow {
+        width: 50px;
+        height: 50px;
+      }
+
+      .nav-arrow svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .music-grid {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .music-card {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container">
+    <div class="carousel-track" id="carouselTrack">
+
+     <!-- black -->
+      <div class="carousel-item" data-character="kael">
+        <div class="character-section">
+          <img src="black_info.png" alt="kael" />
+          <div class="scroll-indicator">
+            <div>🎵</div>
+            <div>휠을 아래로 내려 음악을 감상하세요</div>
+          </div>
+        </div>
+        <div class="music-section">
+          <h2 class="music-title">Kael's Playlist ☆</h2>
+          <div class="music-grid">
+             <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=z4t9LLq1Nk0&list=RDz4t9LLq1Nk0&start_radio=1')">
+              <div class="card-content">
+                <h3>Maison</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=Hh9yZWeTmVM&list=RDHh9yZWeTmVM&start_radio=1')">
+              <div class="card-content">
+                <h3>The Beginning</h3>
+                <p> 　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+            <div class="music-card" onclick="openYouTube('https://www.youtube.com/watch?v=LxNThKrDDss&list=RDLxNThKrDDss&start_radio=1')">
+              <div class="card-content">
+                <h3>Take Me Away</h3>
+                <p>　</p>
+                <div class="play-button">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+  <script>
+    const track = document.getElementById("carouselTrack");
+    const prevArrow = document.getElementById("prevArrow");
+    const nextArrow = document.getElementById("nextArrow");
+    let currentIndex = 0;
+    let scrollStates = [false, false, false, false, false, false];
+    const totalSlides = 6;
+
+    // 화살표 상태 업데이트
+    function updateArrows() {
+      prevArrow.classList.toggle('disabled', currentIndex === 0);
+      nextArrow.classList.toggle('disabled', currentIndex === totalSlides - 1);
+    }
+
+    // 이전 슬라이드
+    function previousSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        scrollStates[currentIndex] = false;
+        moveToIndex(currentIndex);
+        updateScrollState();
+        updateArrows();
+      }
+    }
+
+    // 다음 슬라이드
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        scrollStates[currentIndex] = false;
+        moveToIndex(currentIndex);
+        updateScrollState();
+        updateArrows();
+      }
+    }
+
+    // 휠 이벤트
+    document.addEventListener("wheel", handleWheel, { passive: false });
+
+    function handleWheel(e) {
+      e.preventDefault();
+      
+      const currentItem = document.querySelectorAll('.carousel-item')[currentIndex];
+      const characterSection = currentItem.querySelector('.character-section');
+      const musicSection = currentItem.querySelector('.music-section');
+      const scrollIndicator = currentItem.querySelector('.scroll-indicator');
+      
+      if (e.deltaY > 0) {
+        if (!scrollStates[currentIndex] && musicSection) {
+          scrollStates[currentIndex] = true;
+          characterSection.classList.add('scrolled');
+          musicSection.classList.add('visible');
+          if (scrollIndicator) scrollIndicator.classList.add('hidden');
+        }
+      } else {
+        if (scrollStates[currentIndex] && musicSection) {
+          scrollStates[currentIndex] = false;
+          characterSection.classList.remove('scrolled');
+          musicSection.classList.remove('visible');
+          if (scrollIndicator) scrollIndicator.classList.remove('hidden');
+        }
+      }
+    }
+
+    function moveToIndex(index) {
+      const translateX = -index * window.innerWidth;
+      track.style.transition = "transform 0.4s ease";
+      track.style.transform = `translateX(${translateX}px)`;
+    }
+
+    function updateScrollState() {
+      document.querySelectorAll('.carousel-item').forEach((item, index) => {
+        const characterSection = item.querySelector('.character-section');
+        const musicSection = item.querySelector('.music-section');
+        const scrollIndicator = item.querySelector('.scroll-indicator');
+        
+        if (scrollStates[index] && musicSection) {
+          characterSection.classList.add('scrolled');
+          musicSection.classList.add('visible');
+          if (scrollIndicator) scrollIndicator.classList.add('hidden');
+        } else {
+          characterSection.classList.remove('scrolled');
+          if (musicSection) musicSection.classList.remove('visible');
+          if (scrollIndicator) scrollIndicator.classList.remove('hidden');
+        }
+      });
+    }
+
+    function openYouTube(url) {
+      if (url && url !== '#' && url !== 'YOUR_YOUTUBE_LINK_1') {
+        window.open(url, '_blank');
+      } else {
+        alert('유튜브 링크를 설정해주세요!');
+      }
+    }
+
+    // 탭 전환 기능
+    function switchTab(tabName) {
+      const currentItem = document.querySelectorAll('.carousel-item')[currentIndex];
+      const contentSections = currentItem.querySelectorAll('.content-section');
+      const navBtns = currentItem.querySelectorAll('.nav-btn');
+      
+      // 모든 섹션 숨기기
+      contentSections.forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // 모든 버튼 비활성화
+      navBtns.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // 선택된 섹션 보이기
+      const targetSection = currentItem.querySelector(`#${tabName}-section`);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+      
+      // 선택된 버튼 활성화
+      const targetBtn = currentItem.querySelector(`[data-tab="${tabName}"]`);
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+      }
+    }
+
+    // 이미지 모달 기능
+    function openImageModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = imageSrc;
+      modal.style.display = 'block';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+    }
+
+
+
+    // 초기화
+    window.addEventListener('load', () => {
+      updateArrows();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
